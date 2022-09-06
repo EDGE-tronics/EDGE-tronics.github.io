@@ -762,13 +762,13 @@ function jog(){
     jogB.value(1);
     jogB.style('background-color', 'rgb(200,90,0)');
     console.log("Jog On");
-    robot.specialMove(8);
+    robot.specialMove(7);
   }
   else if (jogB.value() == 1){
     jogB.value(0);
     jogB.style('background-color', 'rgb(57, 57, 57)');
     console.log("Jog Off");
-    robot.specialMove(9); 
+    robot.specialMove(7); 
   }
 }
 
