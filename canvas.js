@@ -20,6 +20,7 @@ let shouldHandleKeyDown = false;
 let fbrl = [0, 0, 0, 0];
 var robot = new Quadruped(LSS_Robot_Model.MechDog);
 var comm, keyFlag = true, opacity = false;
+var mobile = false;
 
 class headerButtons{
   constructor(name,x,message){
@@ -264,6 +265,7 @@ function setup(){
     createCanvas(windowHeight,windowWidth, WEBGL);
     wWidth = windowHeight;
     wHeight = windowWidth;
+    mobile = true;
   }
 
   //Set up the canvas
@@ -273,7 +275,7 @@ function setup(){
     footerHeight = 0.25*wHeight;
   }
   else{
-    headerHeight = 90;
+    headerHeight = 80;
     footerHeight = 150;
   }
   canvasHeight = wHeight - headerHeight - footerHeight;
@@ -281,15 +283,21 @@ function setup(){
   buttonHeight = wWidth*0.0021;
 
   //Establish min size for canvases
-  if (wWidth >= 1000){
-    leftWidth = 0.2*wWidth;
-    middleWidth = 0.6*wWidth;
-    rightWidth = 0.2*wWidth;
+  if (mobile){
+    leftWidth = 0.5*wWidth;
+    rightWidth = 0.5*wWidth;
+    middleWidth = 1;
   }
   else{
-    leftWidth = 200;
-    middleWidth = wWidth - 400;
-    rightWidth = 200;
+    if (wWidth >= 1000){
+      leftWidth = 0.2*wWidth;
+      rightWidth = 0.2*wWidth;  
+    }
+    else{
+      leftWidth = 200;
+      rightWidth = 200;
+    }
+    middleWidth = wWidth - leftWidth - rightWidth;
   }
 
   //Set up the canvases
@@ -313,11 +321,10 @@ function setup(){
   infoButton.style('border-radius','50%');
   infoButton.style('box-shadow', '1px 1px 1px 1px black');
   infoButton.style('background-image', 'linear-gradient(to bottom right, black, grey)');
-  infoButton.option('About');
-  infoButton.option('Github');
-  infoButton.option('Community');
-  infoButton.selected('Community');
-  infoButton.addClass('informationB');
+  infoButton.option('Wiki',0);
+  infoButton.option('Github',1);
+  infoButton.option('Community',2);
+  infoButton.changed(informationB);
   //COM port menu
   COMmenu = createSelect();
   COMmenu.position(wWidth-25-int(wWidth/25), 0.7*headerHeight);
@@ -921,6 +928,30 @@ function selectSpeed(){
   
   robot.setSpeed(parseInt(speed));
   robot.changeSpeed(parseInt(speed));
+
+  if(comm.selected == COMport.USB){
+    switch (speed) {
+      case StopMoveSpeed:
+          comm.send("#254FPC13\r");
+          break;
+      case SpecialMoveSpeed:
+          comm.send("#254FPC14\r");
+          break;
+      case 1:
+          comm.send("#254FPC4\r");
+          break;
+      case 2:
+          comm.send("#254FPC4\r");
+          break;
+      case 3:
+          comm.send("#254FPC3\r");
+          break;
+      case 4:
+          comm.send("#254FPC3\r");
+          break;
+    }
+  }
+  if (comm.selected == COMport.WIFI && speed > 0) comm.send("#100M" + str(robot.orientation(fbrl)) + "S" + speed + "\r");
 }
 
 //Special moves
@@ -934,10 +965,12 @@ function selectLED(){
 
 //Emergency Stop
 function changeButtonE() {
-  emergencyButton.style('background-color', 'rgb(200,90,0)');
   halt();
-  delayT(500).then(() => alert("Emergency stop activated"));
-  delayT(3000).then(() => emergencyButton.style('background-color', 'rgb(254, 175, 60)'));
+  if (comm.selected != COMport.OFF){
+    emergencyButton.style('background-color', 'rgb(200,90,0)');
+    delayT(500).then(() => alert("Emergency stop activated"));
+    delayT(3000).then(() => emergencyButton.style('background-color', 'rgb(254, 175, 60)'));
+  }
 }
 
 function calibrate(){
@@ -1003,6 +1036,20 @@ function menuBAUD() {
   //ports.open(comm.usb.list()[comm.COMnumber], {baudRate: comm.baud});
 }
 
+function informationB(){
+  switch(parseInt(infoButton.value())){
+    case 0:
+      window.open('https://docs.google.com/document/d/1l8P6cEEyHwDhbbdA-603aYjDc3sLHclymzqD1oP1LYg/');
+      break;
+    case 1:
+      window.open('https://github.com/Robotics-Technology/Desk-Pet');
+      break;
+    case 2:
+      window.open('https://www.robotshop.com/community/forum/latest');
+      break;
+  }
+}
+
 function menuCOM(){
   switch(parseInt(COMmenu.value())){
     case 1:
@@ -1059,6 +1106,18 @@ function gaitType() {
     robot.setSpeed(4);
     robot.changeSpeed(4);
   }
+  speed = speedSel.value();
+  if(comm.selected == COMport.USB){
+    switch (speed) {
+      case 3:
+          comm.send("#254FPC3\r");
+          break;
+      case 4:
+          comm.send("#254FPC3\r");
+          break;
+    }
+  }
+  if (comm.selected == COMport.WIFI && speed > 0) comm.send("#100M0V" + str(robot.orientation(fbrl)) + "S" + speed + "\r");
 }
 
 function gaitShape() {
@@ -1433,7 +1492,7 @@ function drawMiddleCanvas(){
     if (comm.selected == COMport.WIFI) comm.send("#100M0V" + robot.orientation(fbrl) + "S" + speed + "\r");
   }
   robot.loop();
-  if (comm.selected == COMport.OFF || robot.body.stopped){
+  if (comm.selected != COMport.USB || robot.body.stopped && !mobile){
     robotAnimations();
     opacity = true;
   }

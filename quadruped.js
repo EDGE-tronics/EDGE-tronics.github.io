@@ -163,36 +163,29 @@ class Quadruped{
                 this.dt.updateDT(60);
                 if (this.speed == 4) this.body.new_beta = Gait_Type.Dynamic;
                 else this.body.new_beta = Gait_Type.Static;
-                //if(comm.selected == COMport.USB) comm.send("#254FPC13\r");
                 break;
             case SpecialMoveSpeed:
                 this.dt.updateDT(180);
-                //if(comm.selected == COMport.USB) comm.send("#254FPC14\r");
                 break;
             case 1:
                 this.dt.updateDT(70);
                 this.body.new_beta = Gait_Type.Static;
-                //if(comm.selected == COMport.USB) comm.send("#254FPC4\r");
                 break;
             case 2:
                 this.dt.updateDT(60);
                 this.body.new_beta = Gait_Type.Static;
-                //if(comm.selected == COMport.USB) comm.send("#254FPC4\r");
                 break;
             case 3:
                 this.dt.updateDT(50);
                 this.body.new_beta = Gait_Type.Static;
-               //if(comm.selected == COMport.USB) comm.send("#254FPC3\r");
                 break;
             case 4:
                 this.dt.updateDT(50);
                 this.body.new_beta = Gait_Type.Dynamic;
-                //if(comm.selected == COMport.USB) comm.send("#254FPC3\r");
                 break;
             default:
                 break;
         }
-        //if (comm.selected == COMport.WIFI && speed > 0) comm.send("#100M" + "S" + speed + "\r");
     }
     orientation(fbrl){
         var rl = fbrl[2] + fbrl[3];
