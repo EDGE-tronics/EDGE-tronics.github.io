@@ -768,7 +768,7 @@ function jog(){
     jogB.value(0);
     jogB.style('background-color', 'rgb(57, 57, 57)');
     console.log("Jog Off");
-    robot.specialMove(7); 
+    robot.specialMove(8); 
   }
 }
 
