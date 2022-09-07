@@ -267,7 +267,7 @@ function setup(){
     wHeight = windowWidth;
   }
 
-  headerHeight = 0.15*wHeight;
+  headerHeight = 0.13*wHeight;
   footerHeight = 1;
 
   canvasSize();
@@ -1049,9 +1049,9 @@ function canvasSize(){
 
   canvasHeight = wHeight - headerHeight - footerHeight;
   
-  buttonHeight = wWidth*0.0021;
+  buttonHeight = wWidth*0.0022;
 
-  if (wWidth < 900 || wHeight < 500) mobile = true;
+  if (wWidth < 800 || wHeight < 500) mobile = true;
   else mobile = false;
 
   //Establish min size for canvases
@@ -1094,7 +1094,7 @@ function windowResized() {
     wHeight = windowWidth;
   }
 
-  headerHeight = 0.15*wHeight;
+  headerHeight = 0.13*wHeight;
 
   if (seqButton.value() == 0) footerHeight = 0;
   else{
@@ -1103,7 +1103,7 @@ function windowResized() {
   }
   canvasSize();
 
-  infoButton.position(wWidth-1/4*headerHeight, 1/3.5*headerHeight);
+  infoButton.position(wWidth-20, 0.3*headerHeight);
 
   COMmenu.position(wWidth-25-int(wWidth/25), 0.7*headerHeight);
   COMlabel.position(wWidth-COMmenu.width-45-int(wWidth/25), 0.705*headerHeight);
@@ -1133,7 +1133,7 @@ function windowResized() {
       BAUDmenu.position(COMlabel.position().x-3-int(wWidth/25),0.7*headerHeight);
       BAUDmenu.hide();
       BAUDlabel.html('');
-      emergencyButton.position(COMmenu.position().x-45-int(wWidth/25), 0.55*headerHeight);
+      emergencyButton.position(COMmenu.position().x-45-int(wWidth/25), 0.4*headerHeight);
       teachButton.updatePos(emergencyButton.position().x-19-int(wWidth/25));
       emergencyButton.size(75,75);
     }
@@ -1170,13 +1170,13 @@ function windowResized() {
   leftB.position(leftWidth+middleWidth+rightWidth/2+20,buttonsPos);
   rightB.position(leftWidth+middleWidth+rightWidth-46,buttonsPos);
 
-  W.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight/2.15);
+  W.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight*0.475);
   W.style('transform', 'scale(' + str(buttonHeight) + ')');
-  A.position(leftWidth+middleWidth+rightWidth/8-5,headerHeight+canvasHeight/2.3+leftWidth/5.5);
+  A.position(leftWidth+middleWidth+rightWidth/7,headerHeight+canvasHeight*0.5+leftWidth*0.065);
   A.style('transform', 'scale(' + str(buttonHeight) + ')');
-  S.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight/2.2+leftWidth/3.8);
+  S.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight*0.54+leftWidth/9);
   S.style('transform', 'scale(' + str(buttonHeight) + ')');
-  D.position(leftWidth+middleWidth+rightWidth*2.9/8-5,headerHeight+canvasHeight/2.3+leftWidth/5.5);
+  D.position(leftWidth+middleWidth+rightWidth*2.9/8-5,headerHeight+canvasHeight*0.5+leftWidth*0.065);
   D.style('transform', 'scale(' + str(buttonHeight) + ')');
 
   jY.position(leftWidth+middleWidth+rightWidth*3/4-10,headerHeight+canvasHeight/2.15);
@@ -1420,7 +1420,7 @@ function drawHeader(){
   rect(-1/2*wWidth, -1/2*wHeight, wWidth, posHeader);
   fill(254,175,60);
   rect(-1/2*wWidth, -1/2*wHeight+posHeader, wWidth, headerHeight-posHeader);
-  image(logo, -1/2*wWidth, -1/2*wHeight+0.1*headerHeight, 2.5*headerHeight, headerHeight);
+  image(logo, -1/2*wWidth, -1/2*wHeight+0.1*headerHeight, 2.7*headerHeight, headerHeight);
   textFont(roboto);
   textSize(0.3*headerHeight);
   fill(255, 255, 255);
@@ -1455,29 +1455,29 @@ function drawRightCanvas() {
   let joystickSize = (canvasHeight/5+leftWidth/2.3)/2;
   image(joystick1, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-joystickSize/2.3, -1/2*wHeight+headerHeight+canvasHeight/2.3,joystickSize,joystickSize);
   image(joystick2, -1/2*wWidth+leftWidth+middleWidth+rightWidth*3/4-joystickSize/2.1, -1/2*wHeight+headerHeight+canvasHeight/2.3,joystickSize,joystickSize);
-  let buttonPos = -1/2*wHeight+headerHeight+canvasHeight/2.17;
+  let buttonPos = -1/2*wHeight+headerHeight+canvasHeight*0.465;
   if (mobile){
-    button.style('width','30%');
-    button.style('height','30%');
+    button.style('width','25%');
+    button.style('height','25%');
   }
   if (W.checked()){
     button.background('rgba(57,57,57,0.5)');
-    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-5,buttonPos);
+    image(button, middleWidth/2+rightWidth/4-5,buttonPos);
     button.clear();
   }
   if (A.checked()){
     button.background('rgba(57,57,57,0.5)');
-    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/8,buttonPos+joystickSize*0.3);
+    image(button, middleWidth/2+rightWidth/4-joystickSize/4-5,buttonPos+joystickSize*0.25);
     button.clear();
   }
   if (S.checked()){
     button.background('rgba(57,57,57,0.5)');
-    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-5,buttonPos+joystickSize*0.55);
+    image(button, middleWidth/2+rightWidth/4-5,buttonPos+joystickSize*0.55);
     button.clear();
   }
   if (D.checked()){
     button.background('rgba(57,57,57,0.5)');
-    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4+joystickSize/4,buttonPos+joystickSize*0.3);
+    image(button, middleWidth/2+rightWidth/4+joystickSize/4,buttonPos+joystickSize*0.25);
     button.clear();
   }
 }
