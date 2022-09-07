@@ -268,7 +268,7 @@ function setup(){
   }
 
   if (wHeight >= 700) headerHeight = 0.15*wHeight;
-  else headerHeight = 70;
+  else headerHeight = 0.17*wHeight;
   footerHeight = 1;
 
   canvasSize();
@@ -334,12 +334,13 @@ function setup(){
     COMlabel.position(wWidth-COMmenu.width-40-int(wWidth/25), 0.705*headerHeight);
     BAUDlabel.position(BAUDmenu.position().x-43, 0.705*headerHeight);
     emergencyButton.position(BAUDlabel.position().x-40-int(wWidth/25), 0.65*headerHeight);
-    if(wWidth<=900){
+    if(mobile){
       COMlabel.html('');
       BAUDmenu.position(COMlabel.position().x-3-int(wWidth/25),0.7*headerHeight);
       BAUDlabel.html('');
-      emergencyButton.position(COMmenu.position().x-50-int(wWidth/25), 0.55*headerHeight);
+      emergencyButton.position(COMmenu.position().x-45-int(wWidth/25), 0.55*headerHeight);
       teachButton.updatePos(emergencyButton.position().x-19-int(wWidth/25));
+      emergencyButton.size(75,75);
     }
     haltButton.updatePos(teachButton.xPos-17-int(wWidth/25));
   }
@@ -413,13 +414,13 @@ function setup(){
   sendCMD.value(0);
 
   resetB = createButton("R");
-  resetB.position(leftWidth+middleWidth+rightWidth/2+15,headerHeight+canvasHeight*3.3/5);
+  resetB.position(leftWidth+middleWidth+rightWidth/2+15,headerHeight+canvasHeight*3.5/5);
   resetB.size(20,20);
   resetB.style('box-shadow', 'none');
   resetB.mousePressed(reset);
 
   jogB = createButton("J");
-  jogB.position(leftWidth+middleWidth+rightWidth/2-25,headerHeight+canvasHeight*3.3/5);
+  jogB.position(leftWidth+middleWidth+rightWidth/2-25,headerHeight+canvasHeight*3.5/5);
   jogB.size(20,20);
   jogB.style('box-shadow', 'none');
   jogB.value(0);
@@ -566,26 +567,26 @@ function setup(){
 
   DLabel = createDiv("D");
   DLabel.style('color', 'white');
-  DLabel.position(leftWidth+middleWidth+rightWidth/8,headerHeight+canvasHeight*3.8/5);
+  DLabel.position(leftWidth+middleWidth+rightWidth/8,headerHeight+canvasHeight*4/5);
 
   gaitTypesw = createElement(
     'label',
     '<input id="toggle" type="checkbox"/><span class="slider round"></span>'); 
   gaitTypesw.addClass('switch');
-  gaitTypesw.position(leftWidth+middleWidth+rightWidth/4-17,headerHeight+canvasHeight*3.8/5);
+  gaitTypesw.position(leftWidth+middleWidth+rightWidth/4-17,headerHeight+canvasHeight*4/5);
   checkbox = select('#toggle');
   checkbox.changed(gaitType);
 
   SLabel = createDiv("S");
   SLabel.style('color', 'white');
-  SLabel.position(leftWidth+middleWidth+rightWidth/8+rightWidth/4,headerHeight+canvasHeight*3.8/5);
+  SLabel.position(leftWidth+middleWidth+rightWidth/8+rightWidth/4,headerHeight+canvasHeight*4/5);
 
   speedLabel = createDiv("SPEED");
   speedLabel.style('color', 'white');
-  speedLabel.position(leftWidth+middleWidth+rightWidth/2-15,headerHeight+canvasHeight*3.6/5);
+  speedLabel.position(leftWidth+middleWidth+rightWidth/2-15,headerHeight+canvasHeight*3.8/5);
 
   speedSel = createSelect();
-  speedSel.position(leftWidth+middleWidth+rightWidth/2-10,headerHeight+canvasHeight*3.8/5);
+  speedSel.position(leftWidth+middleWidth+rightWidth/2-10,speedLabel.position().y+20);
   speedSel.option('1');
   speedSel.option('2');
   speedSel.option('3');
@@ -611,10 +612,10 @@ function setup(){
   if (wWidth >= 1050) movesLabel = createDiv("SPECIAL MOVES");
   else movesLabel = createDiv("MOVES");
   movesLabel.style('color', 'white');
-  movesLabel.position(leftWidth+middleWidth+rightWidth*0.07,headerHeight+25+canvasHeight*4/5);
+  movesLabel.position(leftWidth+middleWidth+rightWidth*0.07,headerHeight+25+canvasHeight*5/6);
 
   movesSel = createSelect();
-  movesSel.position(leftWidth+middleWidth+rightWidth*0.07,headerHeight+45+canvasHeight*4/5);
+  movesSel.position(leftWidth+middleWidth+rightWidth*0.07,headerHeight+45+canvasHeight*5/6);
   movesSel.option('UP',0);
   movesSel.option('SIT',1);
   movesSel.option('LAY',2);
@@ -627,10 +628,10 @@ function setup(){
 
   ledLabel = createDiv("LED");
   ledLabel.style('color', 'white');
-  ledLabel.position(leftWidth+middleWidth+rightWidth*3/4-20,headerHeight+25+4*canvasHeight/5);
+  ledLabel.position(leftWidth+middleWidth+rightWidth*3/4-20,headerHeight+25+canvasHeight*5/6);
 
   LEDsel = createSelect();
-  LEDsel.position(leftWidth+middleWidth+rightWidth*3/4-20,headerHeight+45+4*canvasHeight/5);
+  LEDsel.position(leftWidth+middleWidth+rightWidth*3/4-20,headerHeight+45+canvasHeight*5/6);
   LEDsel.option('OFF',0);
   LEDsel.option('RED',1);
   LEDsel.option('GREEN',2);
@@ -653,6 +654,8 @@ function setup(){
   seqButton.mousePressed(hideSeq);
   seqButton.value(0);
   windowResized();
+
+  if (mobile) seqButton.hide();
 
   //Robot Model
   updateModel();
@@ -1147,7 +1150,7 @@ function windowResized() {
   }
 
   if (wHeight >= 700) headerHeight = 0.15*wHeight;
-  else headerHeight = 0.13*wHeight;
+  else headerHeight = 0.17*wHeight;
 
   if (seqButton.value() == 0) footerHeight = 0;
   else{
@@ -1163,6 +1166,7 @@ function windowResized() {
   BAUDmenu.position(COMlabel.position().x-BAUDmenu.width-15-int(wWidth/25),0.7*headerHeight);
   BAUDlabel.position(BAUDmenu.position().x-50, 0.705*headerHeight);
   emergencyButton.position(BAUDlabel.position().x-40-int(wWidth/25), 0.65*headerHeight);
+  emergencyButton.size(85,85);
   teachButton.updatePos(emergencyButton.position().x-15-int(wWidth/25));
   if (wWidth>= 1000){
     movesLabel.html('SPECIAL MOVES');
@@ -1179,12 +1183,13 @@ function windowResized() {
     COMlabel.position(wWidth-COMmenu.width-40-int(wWidth/25), 0.705*headerHeight);
     BAUDlabel.position(BAUDmenu.position().x-43, 0.705*headerHeight);
     emergencyButton.position(BAUDlabel.position().x-40-int(wWidth/25), 0.65*headerHeight);
-    if(wWidth<=900){
+    if(mobile){
       COMlabel.html('');
       BAUDmenu.position(COMlabel.position().x-3-int(wWidth/25),0.7*headerHeight);
       BAUDlabel.html('');
-      emergencyButton.position(COMmenu.position().x-50-int(wWidth/25), 0.55*headerHeight);
+      emergencyButton.position(COMmenu.position().x-45-int(wWidth/25), 0.55*headerHeight);
       teachButton.updatePos(emergencyButton.position().x-19-int(wWidth/25));
+      emergencyButton.size(75,75);
     }
     haltButton.updatePos(teachButton.xPos-17-int(wWidth/25));
   }
@@ -1210,12 +1215,15 @@ function windowResized() {
       ctrlIK[i][j].updateInputs(leftWidth+middleWidth+rightWidth*(j*0.3+0.07), headerHeight+20+i*canvasHeight/5, leftWidth);
     }
   }
+  let buttonsPos;
+  if(mobile) buttonsPos = headerHeight+canvasHeight/2.2;
+  else buttonsPos = headerHeight+canvasHeight/2.6;
 
-  CCW.position(leftWidth+middleWidth+rightWidth/11,headerHeight+canvasHeight/2.6);
-  CW.position(leftWidth+middleWidth+rightWidth/2-42,headerHeight+canvasHeight/2.6);
-  leftB.position(leftWidth+middleWidth+rightWidth/2+20,headerHeight+canvasHeight/2.6);
-  rightB.position(leftWidth+middleWidth+rightWidth-46,headerHeight+canvasHeight/2.6);
-  
+  CCW.position(leftWidth+middleWidth+rightWidth/11,buttonsPos);
+  CW.position(leftWidth+middleWidth+rightWidth/2-42,buttonsPos);
+  leftB.position(leftWidth+middleWidth+rightWidth/2+20,buttonsPos);
+  rightB.position(leftWidth+middleWidth+rightWidth-46,buttonsPos);
+
   W.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight/2.15);
   W.style('transform', 'scale(' + str(buttonHeight) + ')');
   A.position(leftWidth+middleWidth+rightWidth/8-5,headerHeight+canvasHeight/2.3+leftWidth/5.5);
@@ -1234,25 +1242,25 @@ function windowResized() {
   jy.position(leftWidth+middleWidth+rightWidth*3/4-10,headerHeight+canvasHeight/2.2+leftWidth/3.8);
   jy.style('transform', 'scale(' + str(buttonHeight) + ')');
 
-  DLabel.position(leftWidth+middleWidth+rightWidth/8,headerHeight+canvasHeight*3.8/5);
-  gaitTypesw.position(leftWidth+middleWidth+rightWidth/4-17,headerHeight+canvasHeight*3.8/5);
-  SLabel.position(leftWidth+middleWidth+rightWidth/8+rightWidth/4,headerHeight+canvasHeight*3.8/5);
+  DLabel.position(leftWidth+middleWidth+rightWidth/8,headerHeight+canvasHeight*4/5);
+  gaitTypesw.position(leftWidth+middleWidth+rightWidth/4-17,headerHeight+canvasHeight*4/5);
+  SLabel.position(leftWidth+middleWidth+rightWidth/8+rightWidth/4,headerHeight+canvasHeight*4/5);
 
-  resetB.position(leftWidth+middleWidth+rightWidth/2+15,headerHeight+canvasHeight*3.3/5);
-  jogB.position(leftWidth+middleWidth+rightWidth/2-25,headerHeight+canvasHeight*3.3/5);
+  resetB.position(leftWidth+middleWidth+rightWidth/2+15,headerHeight+canvasHeight*3.5/5);
+  jogB.position(leftWidth+middleWidth+rightWidth/2-25,headerHeight+canvasHeight*3.5/5);
 
-  speedLabel.position(leftWidth+middleWidth+rightWidth/2-15,headerHeight+canvasHeight*3.6/5);
-  speedSel.position(leftWidth+middleWidth+rightWidth/2-10,headerHeight+canvasHeight*3.8/5);
+  speedLabel.position(leftWidth+middleWidth+rightWidth/2-15,headerHeight+canvasHeight*3.8/5);
+  speedSel.position(leftWidth+middleWidth+rightWidth/2-10,speedLabel.position().y+20);
   
-  CLabel.position(leftWidth+middleWidth+rightWidth/8+rightWidth/2,headerHeight+canvasHeight*3.8/5);
-  gaitShapesw.position(leftWidth+middleWidth+rightWidth*3/4-17,headerHeight+canvasHeight*3.8/5);
-  SQLabel.position(leftWidth+middleWidth+rightWidth-rightWidth/8,headerHeight+canvasHeight*3.8/5);
+  CLabel.position(leftWidth+middleWidth+rightWidth/8+rightWidth/2,headerHeight+canvasHeight*4/5);
+  gaitShapesw.position(leftWidth+middleWidth+rightWidth*3/4-17,headerHeight+canvasHeight*4/5);
+  SQLabel.position(leftWidth+middleWidth+rightWidth-rightWidth/8,headerHeight+canvasHeight*4/5);
 
-  movesLabel.position(leftWidth+middleWidth+rightWidth*0.07,headerHeight+25+canvasHeight*4/5);
-  movesSel.position(leftWidth+middleWidth+rightWidth*0.07,headerHeight+45+canvasHeight*4/5);
+  movesLabel.position(leftWidth+middleWidth+rightWidth*0.07,headerHeight+25+canvasHeight*5/6);
+  movesSel.position(leftWidth+middleWidth+rightWidth*0.07,headerHeight+45+canvasHeight*5/6);
 
-  ledLabel.position(leftWidth+middleWidth+rightWidth*3/4-20,headerHeight+25+canvasHeight*4/5);
-  LEDsel.position(leftWidth+middleWidth+rightWidth*3/4-20,headerHeight+45+canvasHeight*4/5);
+  ledLabel.position(leftWidth+middleWidth+rightWidth*3/4-20,headerHeight+25+canvasHeight*5/6);
+  LEDsel.position(leftWidth+middleWidth+rightWidth*3/4-20,headerHeight+45+canvasHeight*5/6);
   
   seqButton.position(leftWidth+middleWidth+rightWidth-30,wHeight-footerHeight-30);
   
