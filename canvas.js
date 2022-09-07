@@ -265,48 +265,13 @@ function setup(){
     createCanvas(windowHeight,windowWidth, WEBGL);
     wWidth = windowHeight;
     wHeight = windowWidth;
-    mobile = true;
   }
 
-  //Set up the canvas
-  wWidth = wWidth;
-  if (wHeight >= 800){
-    headerHeight = 0.15*wHeight;
-    footerHeight = 0.25*wHeight;
-  }
-  else{
-    headerHeight = 80;
-    footerHeight = 150;
-  }
-  canvasHeight = wHeight - headerHeight - footerHeight;
+  if (wHeight >= 700) headerHeight = 0.15*wHeight;
+  else headerHeight = 70;
+  footerHeight = 1;
 
-  buttonHeight = wWidth*0.0021;
-
-  //Establish min size for canvases
-  if (mobile){
-    leftWidth = 0.5*wWidth;
-    rightWidth = 0.5*wWidth;
-    middleWidth = 1;
-  }
-  else{
-    if (wWidth >= 1000){
-      leftWidth = 0.2*wWidth;
-      rightWidth = 0.2*wWidth;  
-    }
-    else{
-      leftWidth = 200;
-      rightWidth = 200;
-    }
-    middleWidth = wWidth - leftWidth - rightWidth;
-  }
-
-  //Set up the canvases
-  header = createGraphics(wWidth,headerHeight);
-  leftCanvas = createGraphics(leftWidth,canvasHeight);
-  middleCanvas = createGraphics(middleWidth,canvasHeight);
-  rightCanvas = createGraphics(rightWidth,canvasHeight);
-  footer = createGraphics(wWidth,footerHeight);
-  button = createGraphics(leftWidth/12,leftWidth/12);
+  canvasSize();
 
   logo = loadImage('assets/logo.png');
   joystick1 = loadImage("assets/joystick1.png");
@@ -373,7 +338,7 @@ function setup(){
       COMlabel.html('');
       BAUDmenu.position(COMlabel.position().x-3-int(wWidth/25),0.7*headerHeight);
       BAUDlabel.html('');
-      emergencyButton.position(BAUDmenu.position().x-50-int(wWidth/25), 0.65*headerHeight);
+      emergencyButton.position(COMmenu.position().x-50-int(wWidth/25), 0.55*headerHeight);
       teachButton.updatePos(emergencyButton.position().x-19-int(wWidth/25));
     }
     haltButton.updatePos(teachButton.xPos-17-int(wWidth/25));
@@ -1132,6 +1097,43 @@ function gaitShape() {
   }
 }
 
+function canvasSize(){
+
+  canvasHeight = wHeight - headerHeight - footerHeight;
+  
+  buttonHeight = wWidth*0.0021;
+
+  if (wWidth < 900 || wHeight < 500) mobile = true;
+  else mobile = false;
+
+  //Establish min size for canvases
+  if (mobile){
+    leftWidth = 0.5*wWidth;
+    rightWidth = 0.5*wWidth;
+    middleWidth = 1;
+  }
+  else{
+    if (wWidth >= 1000){
+      leftWidth = 0.2*wWidth;
+      middleWidth = 0.6*wWidth;
+      rightWidth = 0.2*wWidth;  
+    }
+    else{
+      leftWidth = 200;
+      rightWidth = 200;
+    }
+    middleWidth = wWidth - leftWidth - rightWidth;
+  }
+
+  //Set up the canvases
+  header = createGraphics(wWidth,headerHeight);
+  leftCanvas = createGraphics(leftWidth,canvasHeight);
+  middleCanvas = createGraphics(middleWidth,canvasHeight);
+  rightCanvas = createGraphics(rightWidth,canvasHeight);
+  footer = createGraphics(wWidth,footerHeight);
+  button = createGraphics(leftWidth/12,leftWidth/12);
+}
+
 function windowResized() {
   if(windowWidth >= windowHeight){
     resizeCanvas(windowWidth,windowHeight);
@@ -1144,35 +1146,15 @@ function windowResized() {
     wHeight = windowWidth;
   }
 
-  if (wHeight >= 800){
-    headerHeight = 0.15*wHeight;
-    footerHeight = 0.25*wHeight;
-  }
-  else{
-    headerHeight = 90;
-    footerHeight = 150;
-  }
+  if (wHeight >= 700) headerHeight = 0.15*wHeight;
+  else headerHeight = 0.13*wHeight;
+
   if (seqButton.value() == 0) footerHeight = 0;
-  canvasHeight = wHeight - headerHeight - footerHeight;
-
-  buttonHeight = wWidth*0.0021;
-
-  if (wWidth >= 1000){
-    leftWidth = 0.2*wWidth;
-    middleWidth = 0.6*wWidth;
-    rightWidth = 0.2*wWidth;
-  }
   else{
-    leftWidth = 200;
-    middleWidth = wWidth - 400;
-    rightWidth = 200;
+    if (wHeight >= 700) footerHeight = 0.25*wHeight;
+    else footerHeight = 150;
   }
-
-  leftCanvas = createGraphics(leftWidth,canvasHeight);
-  middleCanvas = createGraphics(middleWidth,canvasHeight);
-  rightCanvas = createGraphics(rightWidth,canvasHeight);
-  footer = createGraphics(wWidth,footerHeight);
-  button = createGraphics(leftWidth/12,leftWidth/12);
+  canvasSize();
 
   infoButton.position(wWidth-1/4*headerHeight, 1/3.5*headerHeight);
 
@@ -1201,7 +1183,7 @@ function windowResized() {
       COMlabel.html('');
       BAUDmenu.position(COMlabel.position().x-3-int(wWidth/25),0.7*headerHeight);
       BAUDlabel.html('');
-      emergencyButton.position(BAUDmenu.position().x-50-int(wWidth/25), 0.65*headerHeight);
+      emergencyButton.position(COMmenu.position().x-50-int(wWidth/25), 0.55*headerHeight);
       teachButton.updatePos(emergencyButton.position().x-19-int(wWidth/25));
     }
     haltButton.updatePos(teachButton.xPos-17-int(wWidth/25));
@@ -1492,7 +1474,7 @@ function drawMiddleCanvas(){
     if (comm.selected == COMport.WIFI) comm.send("#100M0V" + robot.orientation(fbrl) + "S" + speed + "\r");
   }
   robot.loop();
-  if (comm.selected != COMport.USB || robot.body.stopped && !mobile){
+  if ((comm.selected != COMport.USB || robot.body.stopped) && !mobile){
     robotAnimations();
     opacity = true;
   }
@@ -1505,8 +1487,9 @@ function drawMiddleCanvas(){
 function drawRightCanvas() {
   rightCanvas.background(125);
   image(rightCanvas, -1/2*wWidth+leftWidth+middleWidth, -1/2*wHeight+headerHeight);
-  image(joystick1, -1/2*wWidth+leftWidth+middleWidth+rightWidth/11-10, -1/2*wHeight+headerHeight+canvasHeight/2.3,leftWidth/2.3,leftWidth/2.3);
-  image(joystick2, -1/2*wWidth+leftWidth+middleWidth+rightWidth/2+8, -1/2*wHeight+headerHeight+canvasHeight/2.3-1,leftWidth/2.2,leftWidth/2.3);
+  let joystickSize = (canvasHeight/5+leftWidth/2.3)/2;
+  image(joystick1, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-joystickSize/2.3, -1/2*wHeight+headerHeight+canvasHeight/2.3,joystickSize,joystickSize);
+  image(joystick2, -1/2*wWidth+leftWidth+middleWidth+rightWidth*3/4-joystickSize/2.1, -1/2*wHeight+headerHeight+canvasHeight/2.3-1,joystickSize,joystickSize);
   if (W.checked()){
     button.background('rgba(57,57,57,0.5)');
     image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-5,-1/2*wHeight+headerHeight+canvasHeight/2.17);
