@@ -267,8 +267,7 @@ function setup(){
     wHeight = windowWidth;
   }
 
-  if (wHeight >= 700) headerHeight = 0.15*wHeight;
-  else headerHeight = 0.17*wHeight;
+  headerHeight = 0.15*wHeight;
   footerHeight = 1;
 
   canvasSize();
@@ -281,7 +280,6 @@ function setup(){
   //Set up header buttons and menus
   infoButton = createSelect();
   infoButton.value(0);
-  infoButton.position(wWidth-1/3.5*headerHeight, 1/3.5*headerHeight);
   infoButton.size(18,18);
   infoButton.style('border-radius','50%');
   infoButton.style('box-shadow', '1px 1px 1px 1px black');
@@ -292,7 +290,6 @@ function setup(){
   infoButton.changed(informationB);
   //COM port menu
   COMmenu = createSelect();
-  COMmenu.position(wWidth-25-int(wWidth/25), 0.7*headerHeight);
   COMmenu.option('OFF', 0);
   COMmenu.option('USB', 1);
   COMmenu.option('WIFI', 2);
@@ -300,10 +297,8 @@ function setup(){
   COMmenu.changed(menuCOM);
   COMlabel = createDiv('COM');
   COMlabel.style('color', 'rgb(57, 57, 57)');
-  COMlabel.position(wWidth-COMmenu.width-45-int(wWidth/25), 0.705*headerHeight);
   //Baudrate menu
   BAUDmenu = createSelect();
-  BAUDmenu.position(COMlabel.position().x-BAUDmenu.width-15-int(wWidth/25),0.7*headerHeight);
   BAUDmenu.option('9600');
   BAUDmenu.option('19200');
   BAUDmenu.option('38400');
@@ -313,10 +308,8 @@ function setup(){
   BAUDmenu.changed(menuBAUD);
   BAUDlabel = createDiv('BAUD');
   BAUDlabel.style('color', 'rgb(57, 57, 57)');
-  BAUDlabel.position(BAUDmenu.position().x-50, 0.705*headerHeight);
   //Emergency button
   emergencyButton = createButton('');
-  emergencyButton.position(BAUDlabel.position().x-35-int(wWidth/25), 0.65*headerHeight);
   emergencyButton.size(85,85);
   emergencyButton.style('box-shadow', 'none');
   emergencyButton.style('background-color','rgb(254, 175, 60)');
@@ -327,30 +320,12 @@ function setup(){
   teachButton = new headerButtons('TEACH',emergencyButton.position().x-15-int(wWidth/25),'go limp');
   //Halt & Hold button
   haltButton = new headerButtons('HALT & HOLD',teachButton.xPos-62-int(wWidth/25),'halt and hold');
-  if (wWidth<1000){
-    haltButton.updateName('HOLD');
-    COMlabel.html('COM');
-    BAUDlabel.html('BAUD');
-    COMlabel.position(wWidth-COMmenu.width-40-int(wWidth/25), 0.705*headerHeight);
-    BAUDlabel.position(BAUDmenu.position().x-43, 0.705*headerHeight);
-    emergencyButton.position(BAUDlabel.position().x-40-int(wWidth/25), 0.65*headerHeight);
-    if(mobile){
-      COMlabel.html('');
-      BAUDmenu.position(COMlabel.position().x-3-int(wWidth/25),0.7*headerHeight);
-      BAUDlabel.html('');
-      emergencyButton.position(COMmenu.position().x-45-int(wWidth/25), 0.55*headerHeight);
-      teachButton.updatePos(emergencyButton.position().x-19-int(wWidth/25));
-      emergencyButton.size(75,75);
-    }
-    haltButton.updatePos(teachButton.xPos-17-int(wWidth/25));
-  }
   //Limp button
   limpButton = new headerButtons('LIMP',haltButton.xPos-16-int(wWidth/25),'go limp');
   //Calibrate button
   caliButton = new headerButtons('CALIBRATE',limpButton.xPos-50-int(wWidth/25),'go limp, place the robot in the calibration posture and press OK');
   //Robot model menu
   MODELmenu = createSelect();
-  MODELmenu.position(caliButton.xPos-55-int(wWidth/25), 0.705*headerHeight);
   MODELmenu.option('DESKPET');
   MODELmenu.option('MECHDOG');
   MODELmenu.disable('DESKPET');
@@ -399,28 +374,23 @@ function setup(){
 
   labelCMD = createDiv("DIRECT COMMAND");
   labelCMD.style('color', 'white');
-  labelCMD.position(leftWidth*0.06,headerHeight+25+4*canvasHeight/5);
 
   directCMD = createInput();
   directCMD.style('color', 'Black');
-  directCMD.position(leftWidth*0.06,headerHeight+25+4.3*canvasHeight/5);
   directCMD.size(leftWidth*0.6,20);
   directCMD.mouseOver(keyLock);
   directCMD.mouseOut(keyUnlock);
 
   sendCMD = createButton("SEND");
-  sendCMD.position(leftWidth*0.72,headerHeight+27+4.3*canvasHeight/5);
   sendCMD.mousePressed(CMDsend);
   sendCMD.value(0);
 
   resetB = createButton("R");
-  resetB.position(leftWidth+middleWidth+rightWidth/2+15,headerHeight+canvasHeight*3.5/5);
   resetB.size(20,20);
   resetB.style('box-shadow', 'none');
   resetB.mousePressed(reset);
 
   jogB = createButton("J");
-  jogB.position(leftWidth+middleWidth+rightWidth/2-25,headerHeight+canvasHeight*3.5/5);
   jogB.size(20,20);
   jogB.style('box-shadow', 'none');
   jogB.value(0);
@@ -478,7 +448,6 @@ function setup(){
   }
 
   CCW = createButton("");
-  CCW.position(leftWidth+middleWidth+rightWidth/11,headerHeight+canvasHeight/2.6);
   CCW.size(30,30);
   CCW.html('&#x21BA;');
   CCW.style('border-radius','50%');
@@ -488,7 +457,6 @@ function setup(){
   CCW.value(1);
 
   CW = createButton("");
-  CW.position(leftWidth+middleWidth+rightWidth/2-42,headerHeight+canvasHeight/2.6);
   CW.size(30,30);
   CW.html('	&#x21BB;');
   CW.style('border-radius','50%');
@@ -498,7 +466,6 @@ function setup(){
   CW.value(1);
 
   leftB = createButton("");
-  leftB.position(leftWidth+middleWidth+rightWidth/2+20,headerHeight+canvasHeight/2.6);
   leftB.size(30,30);
   leftB.html('&#x2190;');
   leftB.style('border-radius','50%');
@@ -508,7 +475,6 @@ function setup(){
   leftB.value(1);
 
   rightB = createButton("");
-  rightB.position(leftWidth+middleWidth+rightWidth-46,headerHeight+canvasHeight/2.6);
   rightB.size(30,30);
   rightB.html('&#x2192;');
   rightB.style('border-radius','50%');
@@ -518,75 +484,62 @@ function setup(){
   rightB.value(1);
 
   W = createCheckbox("");
-  W.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight/2.15);
   W.style('transform', 'scale(' + str(buttonHeight) + ')');
   W.style('opacity', '0');
   W.changed(forward);
 
   A = createCheckbox("");
-  A.position(leftWidth+middleWidth+rightWidth/8-5,headerHeight+canvasHeight/2.3+leftWidth/5.5);
   A.style('transform', 'scale(' + str(buttonHeight) + ')');
   A.style('opacity', '0');
   A.changed(left);
 
   S = createCheckbox("");
-  S.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight/2.2+leftWidth/3.8);
   S.style('transform', 'scale(' + str(buttonHeight) + ')');
   S.style('opacity', '0');
   S.changed(backward);
 
   D = createCheckbox("");
-  D.position(leftWidth+middleWidth+rightWidth*2.9/8-5,headerHeight+canvasHeight/2.3+leftWidth/5.5);
   D.style('transform', 'scale(' + str(buttonHeight) + ')');
   D.style('opacity', '0');
   D.changed(right);
 
   jY = createCheckbox("");
-  jY.position(leftWidth+middleWidth+rightWidth*3/4-10,headerHeight+canvasHeight/2.15);
   jY.style('transform', 'scale(' + str(buttonHeight) + ')');
   jY.style('opacity', '0');
   jY.changed(Yplus);
 
   jx = createCheckbox("");
-  jx.position(leftWidth+middleWidth+rightWidth*5/8-5,headerHeight+canvasHeight/2.3+leftWidth/5.5);
   jx.style('transform', 'scale(' + str(buttonHeight) + ')');
   jx.style('opacity', '0');
   jx.changed(Xminus);
 
   jX = createCheckbox("");
-  jX.position(leftWidth+middleWidth+rightWidth*6.7/8-5,headerHeight+canvasHeight/2.3+leftWidth/5.5);
   jX.style('transform', 'scale(' + str(buttonHeight) + ')');
   jX.style('opacity', '0');
   jX.changed(Xplus);
 
   jy = createCheckbox("");
-  jy.position(leftWidth+middleWidth+rightWidth*3/4-10,headerHeight+canvasHeight/2.2+leftWidth/3.8);
   jy.style('transform', 'scale(' + str(buttonHeight) + ')');
   jy.style('opacity', '0');
   jy.changed(Yminus);
 
   DLabel = createDiv("D");
   DLabel.style('color', 'white');
-  DLabel.position(leftWidth+middleWidth+rightWidth/8,headerHeight+canvasHeight*4/5);
 
   gaitTypesw = createElement(
     'label',
     '<input id="toggle" type="checkbox"/><span class="slider round"></span>'); 
   gaitTypesw.addClass('switch');
-  gaitTypesw.position(leftWidth+middleWidth+rightWidth/4-17,headerHeight+canvasHeight*4/5);
   checkbox = select('#toggle');
   checkbox.changed(gaitType);
 
   SLabel = createDiv("S");
   SLabel.style('color', 'white');
-  SLabel.position(leftWidth+middleWidth+rightWidth/8+rightWidth/4,headerHeight+canvasHeight*4/5);
 
   speedLabel = createDiv("SPEED");
   speedLabel.style('color', 'white');
-  speedLabel.position(leftWidth+middleWidth+rightWidth/2-15,headerHeight+canvasHeight*3.8/5);
 
   speedSel = createSelect();
-  speedSel.position(leftWidth+middleWidth+rightWidth/2-10,speedLabel.position().y+20);
   speedSel.option('1');
   speedSel.option('2');
   speedSel.option('3');
@@ -595,27 +548,18 @@ function setup(){
   speedSel.changed(selectSpeed);
   CLabel = createDiv("C");
   CLabel.style('color', 'white');
-  CLabel.position(leftWidth+middleWidth+rightWidth/8+rightWidth/2,headerHeight+canvasHeight*3.8/5);
-  
+
   gaitShapesw = createElement(
     'label',
     '<input id="toggle" type="checkbox" /><span class="slider round"></span>'); 
   gaitShapesw.addClass('switch');
-  gaitShapesw.position(leftWidth+middleWidth+rightWidth*3/4-17,headerHeight+canvasHeight*3.8/5);
   checkbox2 = select('#toggle', gaitShapesw);
   checkbox2.changed(gaitShape);
   
   SQLabel = createDiv("S");
   SQLabel.style('color', 'white');
-  SQLabel.position(leftWidth+middleWidth+rightWidth-rightWidth/8,headerHeight+canvasHeight*3.8/5);
-  
-  if (wWidth >= 1050) movesLabel = createDiv("SPECIAL MOVES");
-  else movesLabel = createDiv("MOVES");
-  movesLabel.style('color', 'white');
-  movesLabel.position(leftWidth+middleWidth+rightWidth*0.07,headerHeight+25+canvasHeight*5/6);
 
   movesSel = createSelect();
-  movesSel.position(leftWidth+middleWidth+rightWidth*0.07,headerHeight+45+canvasHeight*5/6);
   movesSel.option('UP',0);
   movesSel.option('SIT',1);
   movesSel.option('LAY',2);
@@ -625,13 +569,12 @@ function setup(){
   movesSel.option('STRETCH',6);
   movesSel.selected('UP');
   movesSel.changed(selectMoves);
-
-  ledLabel = createDiv("LED");
-  ledLabel.style('color', 'white');
-  ledLabel.position(leftWidth+middleWidth+rightWidth*3/4-20,headerHeight+25+canvasHeight*5/6);
+  
+  if (wWidth >= 1050) movesLabel = createDiv("SPECIAL MOVES");
+  else movesLabel = createDiv("MOVES");
+  movesLabel.style('color', 'white');
 
   LEDsel = createSelect();
-  LEDsel.position(leftWidth+middleWidth+rightWidth*3/4-20,headerHeight+45+canvasHeight*5/6);
   LEDsel.option('OFF',0);
   LEDsel.option('RED',1);
   LEDsel.option('GREEN',2);
@@ -643,8 +586,10 @@ function setup(){
   LEDsel.selected('GREEN');
   LEDsel.changed(selectLED);
 
+  ledLabel = createDiv("LED");
+  ledLabel.style('color', 'white');
+
   seqButton = createButton("");
-  seqButton.position(leftWidth+middleWidth+rightWidth-30,wHeight-30);
   seqButton.size(25,25);
   seqButton.html('>');
   seqButton.style('border-radius','50%');
@@ -1149,8 +1094,7 @@ function windowResized() {
     wHeight = windowWidth;
   }
 
-  if (wHeight >= 700) headerHeight = 0.15*wHeight;
-  else headerHeight = 0.17*wHeight;
+  headerHeight = 0.15*wHeight;
 
   if (seqButton.value() == 0) footerHeight = 0;
   else{
@@ -1164,6 +1108,7 @@ function windowResized() {
   COMmenu.position(wWidth-25-int(wWidth/25), 0.7*headerHeight);
   COMlabel.position(wWidth-COMmenu.width-45-int(wWidth/25), 0.705*headerHeight);
   BAUDmenu.position(COMlabel.position().x-BAUDmenu.width-15-int(wWidth/25),0.7*headerHeight);
+  BAUDmenu.show();
   BAUDlabel.position(BAUDmenu.position().x-50, 0.705*headerHeight);
   emergencyButton.position(BAUDlabel.position().x-40-int(wWidth/25), 0.65*headerHeight);
   emergencyButton.size(85,85);
@@ -1186,6 +1131,7 @@ function windowResized() {
     if(mobile){
       COMlabel.html('');
       BAUDmenu.position(COMlabel.position().x-3-int(wWidth/25),0.7*headerHeight);
+      BAUDmenu.hide();
       BAUDlabel.html('');
       emergencyButton.position(COMmenu.position().x-45-int(wWidth/25), 0.55*headerHeight);
       teachButton.updatePos(emergencyButton.position().x-19-int(wWidth/25));
@@ -1204,10 +1150,10 @@ function windowResized() {
     }
   }
 
-  labelCMD.position(leftWidth*0.06,headerHeight+25+4*canvasHeight/5);
-  directCMD.position(leftWidth*0.06,headerHeight+25+4.3*canvasHeight/5);
+  labelCMD.position(leftWidth*0.06,headerHeight+25+canvasHeight*4/5);
+  directCMD.position(leftWidth*0.06,headerHeight+25+canvasHeight*4.3/5);
   directCMD.size(leftWidth*0.6,20);
-  sendCMD.position(leftWidth*0.72,headerHeight+27+4.3*canvasHeight/5);
+  sendCMD.position(leftWidth*0.72,headerHeight+27+canvasHeight*4.3/5);
 
   //Right canvas inputs
   for(let i = 0; i < 2; i++){
@@ -1251,19 +1197,27 @@ function windowResized() {
 
   speedLabel.position(leftWidth+middleWidth+rightWidth/2-15,headerHeight+canvasHeight*3.8/5);
   speedSel.position(leftWidth+middleWidth+rightWidth/2-10,speedLabel.position().y+20);
-  
+  if (mobile) speedLabel.style('font-size', '13px');
+  else speedLabel.style('font-size', '15px');
+
   CLabel.position(leftWidth+middleWidth+rightWidth/8+rightWidth/2,headerHeight+canvasHeight*4/5);
   gaitShapesw.position(leftWidth+middleWidth+rightWidth*3/4-17,headerHeight+canvasHeight*4/5);
   SQLabel.position(leftWidth+middleWidth+rightWidth-rightWidth/8,headerHeight+canvasHeight*4/5);
 
-  movesLabel.position(leftWidth+middleWidth+rightWidth*0.07,headerHeight+25+canvasHeight*5/6);
-  movesSel.position(leftWidth+middleWidth+rightWidth*0.07,headerHeight+45+canvasHeight*5/6);
+  movesSel.position(leftWidth+middleWidth+rightWidth*0.07,headerHeight+25+canvasHeight*4.3/5);
+  movesLabel.position(leftWidth+middleWidth+rightWidth*0.07,movesSel.position().y-20);
+  if (mobile) movesLabel.style('font-size', '13px');
+  else movesLabel.style('font-size', '15px');
 
-  ledLabel.position(leftWidth+middleWidth+rightWidth*3/4-20,headerHeight+25+canvasHeight*5/6);
-  LEDsel.position(leftWidth+middleWidth+rightWidth*3/4-20,headerHeight+45+canvasHeight*5/6);
+  LEDsel.position(leftWidth+middleWidth+rightWidth*3/4-20,headerHeight+25+canvasHeight*4.3/5);
+  ledLabel.position(leftWidth+middleWidth+rightWidth*3/4-20,LEDsel.position().y-20);
+  if (mobile) ledLabel.style('font-size', '13px');
+  else ledLabel.style('font-size', '15px');
   
   seqButton.position(leftWidth+middleWidth+rightWidth-30,wHeight-footerHeight-30);
-  
+  if (mobile) seqButton.hide();
+  else seqButton.show();
+
   // //Footer inputs
   // for(let i = 1; i < 6; i++){
   //   triggerMENU[i].position(leftWidth*0.07,headerHeight+canvasHeight+0.15*i*footerHeight);
@@ -1460,10 +1414,13 @@ function draw(){
 function drawHeader(){
   noStroke();
   fill(57);
-  rect(-1/2*wWidth, -1/2*wHeight, wWidth, headerHeight*0.65);
+  let posHeader
+  if (mobile) posHeader = headerHeight*0.5;
+  else posHeader = headerHeight*0.65;
+  rect(-1/2*wWidth, -1/2*wHeight, wWidth, posHeader);
   fill(254,175,60);
-  rect(-1/2*wWidth, -1/2*wHeight+headerHeight*0.65, wWidth, headerHeight*0.35);
-  image(logo, -1/2*wWidth, -1/2*wHeight+0.1*headerHeight, 2.4*headerHeight, headerHeight);
+  rect(-1/2*wWidth, -1/2*wHeight+posHeader, wWidth, headerHeight-posHeader);
+  image(logo, -1/2*wWidth, -1/2*wHeight+0.1*headerHeight, 2.5*headerHeight, headerHeight);
   textFont(roboto);
   textSize(0.3*headerHeight);
   fill(255, 255, 255);
@@ -1497,25 +1454,30 @@ function drawRightCanvas() {
   image(rightCanvas, -1/2*wWidth+leftWidth+middleWidth, -1/2*wHeight+headerHeight);
   let joystickSize = (canvasHeight/5+leftWidth/2.3)/2;
   image(joystick1, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-joystickSize/2.3, -1/2*wHeight+headerHeight+canvasHeight/2.3,joystickSize,joystickSize);
-  image(joystick2, -1/2*wWidth+leftWidth+middleWidth+rightWidth*3/4-joystickSize/2.1, -1/2*wHeight+headerHeight+canvasHeight/2.3-1,joystickSize,joystickSize);
+  image(joystick2, -1/2*wWidth+leftWidth+middleWidth+rightWidth*3/4-joystickSize/2.1, -1/2*wHeight+headerHeight+canvasHeight/2.3,joystickSize,joystickSize);
+  let buttonPos = -1/2*wHeight+headerHeight+canvasHeight/2.17;
+  if (mobile){
+    button.style('width','30%');
+    button.style('height','30%');
+  }
   if (W.checked()){
     button.background('rgba(57,57,57,0.5)');
-    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-5,-1/2*wHeight+headerHeight+canvasHeight/2.17);
+    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-5,buttonPos);
     button.clear();
   }
   if (A.checked()){
     button.background('rgba(57,57,57,0.5)');
-    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/8-5,-1/2*wHeight+headerHeight+canvasHeight/2.3+leftWidth/5.5);
+    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/8,buttonPos+joystickSize*0.3);
     button.clear();
   }
   if (S.checked()){
     button.background('rgba(57,57,57,0.5)');
-    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-5,-1/2*wHeight+headerHeight+canvasHeight/2.2+leftWidth/3.8);
+    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-5,buttonPos+joystickSize*0.55);
     button.clear();
   }
   if (D.checked()){
     button.background('rgba(57,57,57,0.5)');
-    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth*2.9/8-5,-1/2*wHeight+headerHeight+canvasHeight/2.3+leftWidth/5.5);
+    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4+joystickSize/4,buttonPos+joystickSize*0.3);
     button.clear();
   }
 }
