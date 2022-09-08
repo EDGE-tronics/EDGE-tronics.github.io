@@ -10,7 +10,7 @@ let infoButton, COMmenu, BAUDmenu, emergencyButton, teachButton, haltButton;
 let COMlabel, BAUDlabel, limpButton, caliButton, MODELmenu, labname, labcolor;
 let labelCMD, directCMD, sendCMD, resetB, jogB, CCW, CW, leftB, rightB, W, A, S, D, jy, jY, jx, jX;
 let DLabel, gaitTypesw, SLabel, speedLabel, speedSel, CLabel, gaitShapesw, SQLabel;
-let checkbox, checkbox2, movesLabel, movesSel, ledLabel, LEDsel, seqButton;
+let checkbox, checkbox2, movesLabel, movesSel, ledLabel, LEDsel, seqButton, fkButton;
 let robotJoint = [[],[],[],[]], ctrlIK = [[],[]];
 //let frameADD = [[],[],[],[],[],[]], frameN = [1,1,1,1,1,1], saveButton = [[],[],[],[],[],[]], sequencer = [[],[],[],[],[],[]], triggerMENU = [], sequence = [];
 let headerHeight, leftWidth, rightWidth, middleWidth;
@@ -115,13 +115,21 @@ class anglesInput{
     this.slider.changed(this.sliderEvent);
   }
   updateInputs(x,y,width) {
+    this.label.show();
     this.label.position(x,y);
 
+    this.input.show();
     this.input.position(x,y+this.label.height+5);
     this.input.size(width/4.5);
 
+    this.slider.show();
     this.slider.position(x-6,y+this.label.height+this.input.height+15);
     this.slider.style('width', (width/4).toString()+'px');
+  }
+  hideInputs(){
+    this.label.hide();
+    this.input.hide();
+    this.slider.hide();
   }
   inputEvent() {
     if(this.input.value()<this.minVal || this.input.value()>this.maxVal){
@@ -269,8 +277,18 @@ function setup(){
 
   headerHeight = 0.13*wHeight;
   footerHeight = 1;
+  
+  fkButton = createButton("");
+  fkButton.size(20,20);
+  fkButton.html('<');
+  fkButton.style('border-radius','50%');
+  fkButton.style('box-shadow', 'none');
+  fkButton.style('font-size','15px');
+  fkButton.mousePressed(hideFK);
+  fkButton.value(0);
 
   canvasSize();
+  if (!mobile) fkButton.hide();
 
   logo = loadImage('assets/logo.png');
   joystick1 = loadImage("assets/joystick1.png");
@@ -654,6 +672,19 @@ function hideSeq(){
     seqButton.html('<');
     seqButton.value(1);
   }
+  windowResized();
+}
+
+function hideFK(){
+  if (fkButton.value() == 1){
+    fkButton.html('<');
+    fkButton.value(0);
+  }
+  else{
+    fkButton.html('>');
+    fkButton.value(1);
+  }
+  canvasSize();
   windowResized();
 }
 
@@ -1056,30 +1087,34 @@ function canvasSize(){
 
   //Establish min size for canvases
   if (mobile){
-    leftWidth = 0.5*wWidth;
-    rightWidth = 0.5*wWidth;
-    middleWidth = 1;
+    if (fkButton.value() == 0){
+      leftWidth = 0.5*wWidth-1;
+      rightWidth = 0.5*wWidth;
+    }
+    else{
+      leftWidth = 1;
+      rightWidth = wWidth-2;
+    }
   }
   else{
     if (wWidth >= 1000){
       leftWidth = 0.2*wWidth;
-      middleWidth = 0.6*wWidth;
       rightWidth = 0.2*wWidth;  
     }
     else{
       leftWidth = 200;
       rightWidth = 200;
-    }
-    middleWidth = wWidth - leftWidth - rightWidth;
+    } 
   }
-
+  middleWidth = wWidth - leftWidth - rightWidth;
+  
   //Set up the canvases
   header = createGraphics(wWidth,headerHeight);
   leftCanvas = createGraphics(leftWidth,canvasHeight);
   middleCanvas = createGraphics(middleWidth,canvasHeight);
   rightCanvas = createGraphics(rightWidth,canvasHeight);
   footer = createGraphics(wWidth,footerHeight);
-  button = createGraphics(leftWidth/12,leftWidth/12);
+  button = createGraphics(rightWidth/12,rightWidth/12);
 }
 
 function windowResized() {
@@ -1143,22 +1178,35 @@ function windowResized() {
   caliButton.updatePos(limpButton.xPos-50-int(wWidth/25));
   MODELmenu.position(caliButton.xPos-55-int(wWidth/25), 0.705*headerHeight);
 
+  if (fkButton.value() == 0) fkButton.position(leftWidth-25,headerHeight+15);
+  else fkButton.position(15,headerHeight+15);
+
   //Left canvas inputs
   for(let i = 0; i <= 3; i++){
     for (let j = 0; j <= 2; j++){
-      robotJoint[i][j].updateInputs(leftWidth*(j*0.3+0.07),headerHeight+20+i*canvasHeight/5,leftWidth);
+      if (fkButton.value() == 0) robotJoint[i][j].updateInputs(leftWidth*(j*0.3+0.07),headerHeight+20+i*canvasHeight/5,leftWidth);
+      else robotJoint[i][j].hideInputs();
     }
   }
-
-  labelCMD.position(leftWidth*0.06,headerHeight+25+canvasHeight*4/5);
-  directCMD.position(leftWidth*0.06,headerHeight+25+canvasHeight*4.3/5);
-  directCMD.size(leftWidth*0.6,20);
-  sendCMD.position(leftWidth*0.72,headerHeight+27+canvasHeight*4.3/5);
+  if (fkButton.value() == 0) {
+    labelCMD.show();
+    directCMD.show();
+    sendCMD.show();
+    labelCMD.position(leftWidth*0.06,headerHeight+25+canvasHeight*4/5);
+    directCMD.position(leftWidth*0.06,headerHeight+25+canvasHeight*4.3/5);
+    directCMD.size(leftWidth*0.6,20);
+    sendCMD.position(leftWidth*0.72,headerHeight+27+canvasHeight*4.3/5);
+  }
+  else{
+    labelCMD.hide();
+    directCMD.hide();
+    sendCMD.hide();
+  }
 
   //Right canvas inputs
   for(let i = 0; i < 2; i++){
     for (let j = 0; j < 3; j++){
-      ctrlIK[i][j].updateInputs(leftWidth+middleWidth+rightWidth*(j*0.3+0.07), headerHeight+20+i*canvasHeight/5, leftWidth);
+      ctrlIK[i][j].updateInputs(leftWidth+middleWidth+rightWidth*(j*0.3+0.07), headerHeight+20+i*canvasHeight/5, rightWidth);
     }
   }
   let buttonsPos;
@@ -1170,22 +1218,26 @@ function windowResized() {
   leftB.position(leftWidth+middleWidth+rightWidth/2+20,buttonsPos);
   rightB.position(leftWidth+middleWidth+rightWidth-46,buttonsPos);
 
-  W.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight*0.475);
+  let rightW;
+  if (fkButton.value() == 0) rightW = rightWidth;
+  else rightW = wWidth;
+
+  W.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight*0.49);
   W.style('transform', 'scale(' + str(buttonHeight) + ')');
-  A.position(leftWidth+middleWidth+rightWidth/7,headerHeight+canvasHeight*0.5+leftWidth*0.065);
+  A.position(leftWidth+middleWidth+rightW/7,headerHeight+canvasHeight*0.51+rightWidth*0.065);
   A.style('transform', 'scale(' + str(buttonHeight) + ')');
-  S.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight*0.54+leftWidth/9);
+  S.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight*0.545+rightWidth/9);
   S.style('transform', 'scale(' + str(buttonHeight) + ')');
-  D.position(leftWidth+middleWidth+rightWidth*2.9/8-5,headerHeight+canvasHeight*0.5+leftWidth*0.065);
+  D.position(leftWidth+middleWidth+rightW*2.9/8-5,headerHeight+canvasHeight*0.51+rightWidth*0.065);
   D.style('transform', 'scale(' + str(buttonHeight) + ')');
 
-  jY.position(leftWidth+middleWidth+rightWidth*3/4-10,headerHeight+canvasHeight/2.15);
+  jY.position(leftWidth+middleWidth+rightWidth*3/4-10,headerHeight+canvasHeight*0.49);
   jY.style('transform', 'scale(' + str(buttonHeight) + ')');
-  jx.position(leftWidth+middleWidth+rightWidth*5/8-5,headerHeight+canvasHeight/2.3+leftWidth/5.5);
+  jx.position(leftWidth+middleWidth+rightWidth*5/8-5,headerHeight+canvasHeight*0.51+rightWidth*0.065);
   jx.style('transform', 'scale(' + str(buttonHeight) + ')');
-  jX.position(leftWidth+middleWidth+rightWidth*6.7/8-5,headerHeight+canvasHeight/2.3+leftWidth/5.5);
+  jX.position(leftWidth+middleWidth+rightWidth*6.7/8-5,headerHeight+canvasHeight*0.51+rightWidth*0.065);
   jX.style('transform', 'scale(' + str(buttonHeight) + ')');
-  jy.position(leftWidth+middleWidth+rightWidth*3/4-10,headerHeight+canvasHeight/2.2+leftWidth/3.8);
+  jy.position(leftWidth+middleWidth+rightWidth*3/4-10,headerHeight+canvasHeight*0.545+rightWidth/9);
   jy.style('transform', 'scale(' + str(buttonHeight) + ')');
 
   DLabel.position(leftWidth+middleWidth+rightWidth/8,headerHeight+canvasHeight*4/5);
@@ -1428,10 +1480,10 @@ function drawHeader(){
 function drawLeftCanvas() {
   leftCanvas.background(125);
   image(leftCanvas, -1/2*wWidth, -1/2*wHeight+headerHeight);
-  if (teachButton.button.value() == 1) getFeedback();
 }
 
 function drawMiddleCanvas(){
+  if (teachButton.button.value() == 1) getFeedback();
   if (robot.body.new_director_angle != robot.orientation(fbrl)){
     robot.updateAngle(robot.orientation(fbrl));
     if (comm.selected == COMport.WIFI) comm.send("#100M0V" + robot.orientation(fbrl) + "S" + speed + "\r");
@@ -1450,32 +1502,32 @@ function drawMiddleCanvas(){
 function drawRightCanvas() {
   rightCanvas.background(125);
   image(rightCanvas, -1/2*wWidth+leftWidth+middleWidth, -1/2*wHeight+headerHeight);
-  let joystickSize = (canvasHeight/5+leftWidth/2.3)/2;
-  image(joystick1, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-joystickSize/2.3, -1/2*wHeight+headerHeight+canvasHeight/2.3,joystickSize,joystickSize);
-  image(joystick2, -1/2*wWidth+leftWidth+middleWidth+rightWidth*3/4-joystickSize/2.1, -1/2*wHeight+headerHeight+canvasHeight/2.3,joystickSize,joystickSize);
-  let buttonPos = -1/2*wHeight+headerHeight+canvasHeight*0.465;
+  let joystickSize = (canvasHeight/5+(leftWidth+rightWidth)/4.6)/2;
+  image(joystick1, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-joystickSize/2.3, -1/2*wHeight+headerHeight+canvasHeight/2.2,joystickSize,joystickSize);
+  image(joystick2, -1/2*wWidth+leftWidth+middleWidth+rightWidth*3/4-joystickSize/2.1, -1/2*wHeight+headerHeight+canvasHeight/2.2,joystickSize,joystickSize);
+  let buttonPos = -1/2*wHeight+headerHeight+canvasHeight*0.485;
   if (mobile){
     button.style('width', '25px');
     button.style('height','25px');
   }
   if (W.checked()){
     button.background('rgba(57,57,57,0.5)');
-    image(button, middleWidth/2+rightWidth/4,buttonPos);
+    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4,buttonPos);
     button.clear();
   }
   if (A.checked()){
     button.background('rgba(57,57,57,0.5)');
-    image(button, middleWidth/2+rightWidth/4-joystickSize/4-5,buttonPos+joystickSize*0.25);
+    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-joystickSize/4-5,buttonPos+joystickSize*0.25);
     button.clear();
   }
   if (S.checked()){
     button.background('rgba(57,57,57,0.5)');
-    image(button, middleWidth/2+rightWidth/4,buttonPos+joystickSize*0.53);
+    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4,buttonPos+joystickSize*0.53);
     button.clear();
   }
   if (D.checked()){
     button.background('rgba(57,57,57,0.5)');
-    image(button, middleWidth/2+rightWidth/4+joystickSize/4,buttonPos+joystickSize*0.25);
+    image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4+joystickSize/4,buttonPos+joystickSize*0.25);
     button.clear();
   }
 }
