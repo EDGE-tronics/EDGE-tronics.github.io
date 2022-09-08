@@ -590,7 +590,7 @@ function setup(){
   ledLabel.style('color', 'white');
 
   seqButton = createButton("");
-  seqButton.size(25,25);
+  seqButton.size(20,20);
   seqButton.html('>');
   seqButton.style('border-radius','50%');
   seqButton.style('box-shadow', 'none');
@@ -1103,7 +1103,7 @@ function windowResized() {
   }
   canvasSize();
 
-  infoButton.position(wWidth-20, 0.3*headerHeight);
+  infoButton.position(wWidth-25, 0.3*headerHeight);
 
   COMmenu.position(wWidth-25-int(wWidth/25), 0.7*headerHeight);
   COMlabel.position(wWidth-COMmenu.width-45-int(wWidth/25), 0.705*headerHeight);
@@ -1133,9 +1133,9 @@ function windowResized() {
       BAUDmenu.position(COMlabel.position().x-3-int(wWidth/25),0.7*headerHeight);
       BAUDmenu.hide();
       BAUDlabel.html('');
-      emergencyButton.position(COMmenu.position().x-45-int(wWidth/25), 0.4*headerHeight);
+      emergencyButton.position(COMmenu.position().x-45-int(wWidth/25), 0.35*headerHeight);
       teachButton.updatePos(emergencyButton.position().x-19-int(wWidth/25));
-      emergencyButton.size(75,75);
+      emergencyButton.size(70,70);
     }
     haltButton.updatePos(teachButton.xPos-17-int(wWidth/25));
   }
@@ -1414,9 +1414,7 @@ function draw(){
 function drawHeader(){
   noStroke();
   fill(57);
-  let posHeader
-  if (mobile) posHeader = headerHeight*0.5;
-  else posHeader = headerHeight*0.65;
+  let posHeader = headerHeight*0.65;
   rect(-1/2*wWidth, -1/2*wHeight, wWidth, posHeader);
   fill(254,175,60);
   rect(-1/2*wWidth, -1/2*wHeight+posHeader, wWidth, headerHeight-posHeader);
@@ -1462,7 +1460,7 @@ function drawRightCanvas() {
   }
   if (W.checked()){
     button.background('rgba(57,57,57,0.5)');
-    image(button, middleWidth/2+rightWidth/4-5,buttonPos);
+    image(button, middleWidth/2+rightWidth/4,buttonPos);
     button.clear();
   }
   if (A.checked()){
@@ -1472,7 +1470,7 @@ function drawRightCanvas() {
   }
   if (S.checked()){
     button.background('rgba(57,57,57,0.5)');
-    image(button, middleWidth/2+rightWidth/4-5,buttonPos+joystickSize*0.55);
+    image(button, middleWidth/2+rightWidth/4,buttonPos+joystickSize*0.53);
     button.clear();
   }
   if (D.checked()){
