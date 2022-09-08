@@ -1455,8 +1455,8 @@ function drawRightCanvas() {
   image(joystick2, -1/2*wWidth+leftWidth+middleWidth+rightWidth*3/4-joystickSize/2.1, -1/2*wHeight+headerHeight+canvasHeight/2.3,joystickSize,joystickSize);
   let buttonPos = -1/2*wHeight+headerHeight+canvasHeight*0.465;
   if (mobile){
-    button.style('width','25%');
-    button.style('height','25%');
+    button.style('width', '25px');
+    button.style('height','25px');
   }
   if (W.checked()){
     button.background('rgba(57,57,57,0.5)');

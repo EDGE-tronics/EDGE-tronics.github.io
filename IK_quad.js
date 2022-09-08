@@ -17,16 +17,30 @@ var L3_MECHDOG = 90;
 var FOOT_RAD_MECHDOG = 15;
 var W_MECHDOG = 75/2;
 var L_MECHDOG = 200/2;
-var A_MECHDOG = 35;
+var A_MECHDOG = 45;
 var A_MECHDOG_JOG = 30;
 var B_MECHDOG_DYNAMIC = 20;
-var B_MECHDOG_STATIC = 25;
-var CGX_MECHDOG_DYNAMIC = 35;
-var CGX_MECHDOG_STATIC = 10;
+var B_MECHDOG_STATIC = 20;
+var CGX_MECHDOG_DYNAMIC = 40;
+var CGX_MECHDOG_STATIC = 15;
 var CGZ_MECHDOG = 0;
 var X_MECHDOG = 0;
 var Z_MECHDOG = 0;
-var Y_MECHDOG = 150;
+var Y_MECHDOG = 140;
+var BALANCE_DISTANCE_MECHDOG = 30;
+//Limits
+var CGY_MECHDOG_LIMIT_MIN = 60;
+var CGY_MECHDOG_LIMIT_MAX = 160;
+var CGX_MECHDOG_LIMIT_MIN = -45;
+var CGX_MECHDOG_LIMIT_MAX = 45;
+var CGZ_MECHDOG_LIMIT_MIN = -30;
+var CGZ_MECHDOG_LIMIT_MAX = 30;
+var ROLL_MECHDOG_LIMIT_MIN = -20; //degrees
+var ROLL_MECHDOG_LIMIT_MAX = 20;
+var PITCH_MECHDOG_LIMIT_MIN = -20;
+var PITCH_MECHDOG_LIMIT_MAX = 20;
+var YAW_MECHDOG_LIMIT_MIN = -20;
+var YAW_MECHDOG_LIMIT_MAX = 20;
 var BALANCE_DISTANCE_MECHDOG = 30;
 
 var L1_DESKPET = 58;
@@ -35,11 +49,27 @@ var L3_DESKPET = 72.8;
 var FOOT_RAD_DESKPET = 4.5;
 var W_DESKPET = 51.5/2;
 var L_DESKPET = 89.8/2;
-var A_DESKPET = 20;
+var B_DESKPET_DYNAMIC = 15;
+var B_DESKPET_STATIC = 20;
 var B_DESKPET = 20;
 var X_DESKPET = 10;
 var Z_DESKPET = 0;
 var Y_DESKPET = 90;
+var CGX_DESKPET_DYNAMIC = 20
+var CGX_DESKPET_STATIC = 10
+//Limits
+var CGY_DESKPET_LIMIT_MIN = 50;
+var CGY_DESKPET_LIMIT_MAX = 110;
+var CGX_DESKPET_LIMIT_MIN = -25;
+var CGX_DESKPET_LIMIT_MAX = 25;
+var CGZ_DESKPET_LIMIT_MIN = -20;
+var CGZ_DESKPET_LIMIT_MAX = 20;
+var ROLL_DESKPET_LIMIT_MIN = -20; //degrees
+var ROLL_DESKPET_LIMIT_MAX = 20;
+var PITCH_DESKPET_LIMIT_MIN = -20;
+var PITCH_DESKPET_LIMIT_MAX = 20;
+var YAW_DESKPET_LIMIT_MIN = -20;
+var YAW_DESKPET_LIMIT_MAX = 20;
 var BALANCE_DISTANCE_DESKPET = 15;
 
 var ROTANGLE = 0.1745; //10 deg in radians
@@ -261,6 +291,14 @@ class Joints{
 class Body{
     constructor(robot){
         this.model = robot;
+        
+        this.cgy_limits = [];
+        this.cgx_limits = [];
+        this.cgz_limits = [];
+        this.roll_limits = [];
+        this.pitch_limits = [];
+        this.yaw_limits = [];
+
         this.updateRobotModel(this.model);
 
         this.roll = 0;
@@ -301,51 +339,71 @@ class Body{
         if (robot == LSS_Robot_Model.MechDog){
             this.w = W_MECHDOG;
             this.l = L_MECHDOG;
+            this.cgy_limits[0] = CGY_MECHDOG_LIMIT_MIN;
+            this.cgy_limits[1] = CGY_MECHDOG_LIMIT_MAX;
+            this.cgx_limits[0] = CGX_MECHDOG_LIMIT_MIN;
+            this.cgx_limits[1] = CGX_MECHDOG_LIMIT_MAX;
+            this.cgz_limits[0] = CGZ_MECHDOG_LIMIT_MIN;
+            this.cgz_limits[1] = CGZ_MECHDOG_LIMIT_MAX;
+            this.roll_limits[0] = ROLL_MECHDOG_LIMIT_MIN;
+            this.roll_limits[1] = ROLL_MECHDOG_LIMIT_MAX;
+            this.pitch_limits[0] = PITCH_MECHDOG_LIMIT_MIN;
+            this.pitch_limits[1] = PITCH_MECHDOG_LIMIT_MAX;
+            this.yaw_limits[0] = YAW_MECHDOG_LIMIT_MIN;
+            this.yaw_limits[1] = YAW_MECHDOG_LIMIT_MAX;
+            this.cgx_dynamic_gait = CGX_MECHDOG_DYNAMIC;
+            this.cgx_static_gait = CGX_MECHDOG_STATIC;
+            this.cgy_std = Y_MECHDOG;
+            this.cgz_std = Z_MECHDOG;
+            this.foot_elevation = A_MECHDOG;
+            this.jog_foot_elevation = A_MECHDOG_JOG;
+            this.step_distance_dynamic = B_MECHDOG_DYNAMIC;
+            this.step_distance_static = B_MECHDOG_STATIC;
             this.X = X_MECHDOG;
             this.Z = Z_MECHDOG;
             this.balance_distance = BALANCE_DISTANCE_MECHDOG;
         }else if(robot == LSS_Robot_Model.DeskPet){
             this.w = W_DESKPET;
             this.l = L_DESKPET;
+            this.cgy_limits[0] = CGY_DESKPET_LIMIT_MIN;
+            this.cgy_limits[1] = CGY_DESKPET_LIMIT_MAX;
+            this.cgx_limits[0] = CGX_DESKPET_LIMIT_MIN;
+            this.cgx_limits[1] = CGX_DESKPET_LIMIT_MAX;
+            this.cgz_limits[0] = CGZ_DESKPET_LIMIT_MIN;
+            this.cgz_limits[1] = CGZ_DESKPET_LIMIT_MAX;
+            this.roll_limits[0] = ROLL_DESKPET_LIMIT_MIN;
+            this.roll_limits[1] = ROLL_DESKPET_LIMIT_MAX;
+            this.pitch_limits[0] = PITCH_DESKPET_LIMIT_MIN;
+            this.pitch_limits[1] = PITCH_DESKPET_LIMIT_MAX;
+            this.yaw_limits[0] = YAW_DESKPET_LIMIT_MIN;
+            this.yaw_limits[1] = YAW_DESKPET_LIMIT_MAX;
+            this.cgx_dynamic_gait = CGX_DESKPET_DYNAMIC;
+            this.cgx_static_gait = CGX_DESKPET_STATIC;
+            this.cgy_std = Y_DESKPET;
+            this.cgz_std = Z_DESKPET;
+            this.foot_elevation = A_DESKPET;
+            this.jog_foot_elevation = A_DESKPET_JOG;
+            this.step_distance_dynamic = B_DESKPET_DYNAMIC;
+            this.step_distance_static = B_DESKPET_STATIC;
             this.X = X_DESKPET;
             this.Z = Z_DESKPET;
             this.balance_distance = BALANCE_DISTANCE_DESKPET;
         }
     }
     robotPostureInit(){	
-        switch (this.model) {
-            case LSS_Robot_Model.MechDog:
-                if (this.beta == Gait_Type.Dynamic) {
-                    this.cgx = CGX_MECHDOG_DYNAMIC;
-                    this.cgy = Y_MECHDOG;
-                    this.cgz = 0;
-                    this.a = A_MECHDOG;
-                    this.b = B_MECHDOG_DYNAMIC;
-                } else {
-                    this.beta = Gait_Type.Static;
-                    this.cgx = CGX_MECHDOG_STATIC;
-                    this.cgy = Y_MECHDOG;
-                    this.cgz = 0;
-                    this.a = A_MECHDOG;
-                    this.b = B_MECHDOG_STATIC;
-                }
-                break;
-            case LSS_Robot_Model.DeskPet:
-                if (this.beta == Gait_Type.Dynamic) {
-                    this.cgx = 0;
-                    this.cgy = Y_DESKPET;
-                    this.cgz = 0;
-                    this.a = A_DESKPET;
-                    this.b = B_DESKPET;
-                } else {
-                    this.beta = Gait_Type.Static;
-                    this.cgx = 0;
-                    this.cgy = Y_DESKPET;
-                    this.cgz = 0;
-                    this.a = A_DESKPET;
-                    this.b = B_DESKPET;
-                }
-                break;
+        if (this.beta == Gait_Type.Dynamic) {
+            this.cgx = this.cgx_dynamic_gait;
+            this.cgy = this.cgy_std;
+            this.cgz = this.cgz_std;
+            this.a = this.foot_elevation;
+            this.b = this.step_distance_dynamic;
+        } else {
+            this.beta = this.Gait_Type.Static;
+            this.cgx = this.cgx_static_gait;
+            this.cgy = this.cgy_std;
+            this.cgz = this.cgz_std;
+            this.a = this.foot_elevation;
+            this.b = this.step_distance_static;
         }
     }
     cgx_blocked(){
@@ -542,8 +600,8 @@ class Body{
             else if (this.trajectory_type == Foot_Trajectory.Square){
                 if (i == 0){
                     y = a;
-                    x = xft/2;
-                    z = zft/2;
+                    x = xft;
+                    z = zft;
                 }
                 else if (i == 1){
                     y = a;
@@ -566,21 +624,15 @@ class Body{
             if (i == 3){
                 this.legs[leg_ID-1].xg = x;
                 this.legs[leg_ID-1].zg = z;
-                y = 10;
+                y = 15;
             }
         }
         else{
             y = 0;
-            if(i == 7 && this.trajectory_type == Foot_Trajectory.Square) {
-                x = this.legs[leg_ID-1].xg;
-                z = this.legs[leg_ID-1].zg;
-                y = a;
-            }else{
-                this.legs[leg_ID-1].xg += stepx;
-                this.legs[leg_ID-1].zg += stepz;
-                x = this.legs[leg_ID-1].xg;
-                z = this.legs[leg_ID-1].zg;
-            }
+            this.legs[leg_ID-1].xg += stepx;
+            this.legs[leg_ID-1].zg += stepz;
+            x = this.legs[leg_ID-1].xg;
+            z = this.legs[leg_ID-1].zg;
         }
 
         if(abs(this.legs[leg_ID-1].xg - this.legs[leg_ID-1].rest_pos_x)< 1 && abs(this.legs[leg_ID-1].zg - this.legs[leg_ID-1].rest_pos_z)<1 && (this.move_state == 0) && (this.rot_angle == 0)) {
@@ -707,7 +759,7 @@ class Body{
                             break;
                         case 2: //MOVE PAW
                             this.spm_state = 3;
-                            y = 50;
+                            y = 60;
                             this.legs[3].zg = 20;
                             legs_updated[3] = true;
                             break;
@@ -718,7 +770,7 @@ class Body{
                             break;
                         case 4: //MOVE PAW
                             this.spm_state = 5;
-                            y = 50;
+                            y = 60;
                             this.legs[1].zg = -20;
                             legs_updated[1] = true;
                             break;
@@ -731,17 +783,38 @@ class Body{
                                 this.stopped = false;
                             }
                             break;
-                        case 6: //UP FROM SIT PART 1
-                            this.pitch = 0;
-                            this.cgx = 0;
+                        case 6: //MOVE PAW
                             this.spm_state = 7;
+                            y = 60;
+                            this.legs[3].zg = this.legs[3].rest_pos_z;
+                            legs_updated[3]=true;
                             break;
-                        case 7: //UP FROM SIT PART 2
+                        case 7:
+                            this.spm_state = 8;
+                            y = 0;
+                            legs_updated[3]=true;
+                            break;
+                        case 8: 
+                            this.spm_state = 9;
+                            y = 60;
+                            this.legs[1].zg = this.legs[1].rest_pos_z;
+                            legs_updated[1]=true;
+                            break;
+                        case 9: 
+                            this.spm_state = 10;
+                            y = 0;
+                            legs_updated[1]=true;
+                            break;
+                        case 10: 
                             this.pitch = 0;
                             this.cgx = 0;
+                            this.spm_state = 11;
+                            break;
+                        case 11: 
                             this.cgy = Y_MECHDOG;
                             this.spm_state = 0;
-                            this.sp_move = Special_Moves.UP;
+                            this.sp_move = this.new_sp_move;
+                            if(this.sp_move == Special_Moves.UP) this.stopped = true;
                             break;
                         }
                     break;
@@ -783,9 +856,12 @@ class Body{
                             this.spm_state = 3;
                             break;
                         case 3: 
-                            this.sp_move = Special_Moves.UP;
+                            this.spm_state = 4;
+                            break;
+                        case 4: 
+                            this.sp_move = this.new_sp_move;
                             this.spm_state = 0;
-                            this.stopped = true;
+                            if(this.sp_move == Special_Moves.UP) this.stopped = true;
                             break;
                         }    
                     break;
@@ -811,10 +887,17 @@ class Body{
                             this.roll = 0;
                             if(this.new_sp_move != Special_Moves.LAY){
                                 this.cgy = Y_MECHDOG;
-                                this.spm_state = 0;
-                                this.sp_move = Special_Moves.UP;
-                                this.stopped = true;
+                                this.spm_state = 2;
+                                this.stopped = false;
                             }
+                        case 2: // time to stabilize
+                            this.spm_state = 3;
+                            break;
+                        case 3: 
+                            this.sp_move = this.new_sp_move;
+                            this.spm_state = 0;
+                            if(this.sp_move == Special_Moves.UP) this.stopped = true;
+                            break;
                         break;
                     }
                     break;
@@ -862,10 +945,13 @@ class Body{
                             this.cgx = 0;
                             this.cgy = Y_MECHDOG; 
                             break; 
-                        case 5: 
+                        case 5: //time to stabilize
+                            this.spm_state = 6;
+                            break;
+                        case 6: 
                             this.spm_state = 0;
-                            this.sp_move = Special_Moves.UP;
-                            this.stopped = true;
+                            this.sp_move = this.new_sp_move;
+                            if(this.sp_move == Special_Moves.UP) this.stopped = true;
                             break;
                         }
                     break;
@@ -905,10 +991,13 @@ class Body{
                         this.cgy = Y_MECHDOG; 
                         this.spm_state = 5;
                         break;
-                    case 5:
+                    case 5: //time to stabilize
+                        this.spm_state = 6;
+                        break;
+                    case 6:
                         this.spm_state = 0;
-                        this.sp_move = Special_Moves.UP;
-                        this.stopped = true;
+                        this.sp_move = this.new_sp_move;
+                        if(this.sp_move == Special_Moves.UP) this.stopped = true;
                         break;
                     }
                     break;
@@ -970,9 +1059,12 @@ class Body{
                             this.cgz = 0;
                             this.yaw = 0;
                             this.cgy = Y_MECHDOG; 
+                            this.spm_state = 9;
+                            break;	
+                        case 9: 
                             this.spm_state = 0;
-                            this.sp_move = Special_Moves.UP;
-                            this.stopped = true;
+                            this.sp_move = this.new_sp_move;
+                            if(this.sp_move == Special_Moves.UP) this.stopped = true;
                             break;	
                     }
                     break;
