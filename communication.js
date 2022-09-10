@@ -61,7 +61,7 @@ export class Communication
           // Disable Motion Profile
           this.usb.write("#254EM0\r");
           // Filter Position Count
-          this.usb.write("#254FPC4\r");
+          this.usb.write("#254FPC1\r");
           // Angular Stiffness
           this.usb.write("#254AS-2\r");
           

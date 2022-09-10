@@ -97,31 +97,31 @@ class Quadruped{
     }
     frontalOffset(mm) {
         this.move_flag = true;
-        if (this.body.stopped) {
-            this.body.cgx = mm;
-            if (StopMoveSpeed != this.actual_speed) this.changeSpeed(StopMoveSpeed);
+        if(this.body.stopped && this.body.sp_move == Special_Moves.UP){
+            if(mm >= this.body.cgx_limits[0] && mm <=this.body.cgx_limits[1]) this.body.cgx = mm;
+            if(StopMoveSpeed!= this.actual_speed) this.changeSpeed(StopMoveSpeed);
         }
         if(comm.selected == COMport.WIFI) comm.send("#100M5V" + str(mm) + "\r");
     }
     lateralOffset(mm) {
         this.move_flag = true;
-        if (this.body.stopped) {
-            this.body.cgz = mm;
-            if (StopMoveSpeed != this.actual_speed) this.changeSpeed(StopMoveSpeed);
+        if(this.body.stopped && this.body.sp_move == Special_Moves.UP){
+            if(mm >= this.body.cgz_limits[0] && mm <=this.body.cgz_limits[1]) this.body.cgz = mm;
+            if(StopMoveSpeed!= this.actual_speed) this.changeSpeed(StopMoveSpeed);
         }
         if(comm.selected == COMport.WIFI) comm.send("#100M7V" + str(int(mm)) + "\r");
     }
     height(mm) {
         this.move_flag = true;
-        this.body.cgy = mm;
-        if (this.body.stopped) {
-            if (StopMoveSpeed != this.actual_speed) this.changeSpeed(StopMoveSpeed);
+        if(this.body.sp_move == Special_Moves.UP && mm >= this.body.cgy_limits[0] && mm <=this.body.cgy_limits[1]) this.body.cgy = mm;
+        if(this.body.stopped){
+            if(StopMoveSpeed!= this.actual_speed) this.changeSpeed(StopMoveSpeed);
         }
         if(comm.selected == COMport.WIFI) comm.send("#100M6V" + str(int(mm)) + "\r");
     }
     pitch(angle){
         this.move_flag = true;
-        this.body.pitch = radians(angle);
+        if(this.body.sp_move == Special_Moves.UP && angle >= this.body.pitch_limits[0] && angle <= this.body.pitch_limits[1]) this.body.pitch = radians(angle);
         if(this.body.stopped){
             if(StopMoveSpeed!= this.actual_speed) this.changeSpeed(StopMoveSpeed);
         }
@@ -129,15 +129,15 @@ class Quadruped{
     }
     roll(angle){
         this.move_flag = true;
-        this.body.roll = radians(angle);
+        if(this.body.sp_move == Special_Moves.UP && angle >= this.body.roll_limits[0] && angle <= this.body.roll_limits[1]) this.body.roll = radians(angle);
         if(this.body.stopped){
-            if(StopMoveSpeed != this.actual_speed) this.changeSpeed(StopMoveSpeed);
+            if(StopMoveSpeed!= this.actual_speed) this.changeSpeed(StopMoveSpeed);
         }
         if(comm.selected == COMport.WIFI) comm.send("#100M2V" + str(int(angle)) + "\r");
     }
     yaw(angle){
         this.move_flag = true;
-        this.body.yaw = radians(angle);
+        if(this.body.sp_move == Special_Moves.UP && angle >= this.body.yaw_limits[0] && angle <= this.body.yaw_limits[1]) this.body.yaw = radians(angle);
         if(this.body.stopped){
             if(StopMoveSpeed != this.actual_speed) this.changeSpeed(StopMoveSpeed);
         }
@@ -180,7 +180,7 @@ class Quadruped{
                 this.body.new_beta = Gait_Type.Static;
                 break;
             case 4:
-                this.dt.updateDT(50);
+                this.dt.updateDT(55);
                 this.body.new_beta = Gait_Type.Dynamic;
                 break;
             default:
@@ -245,16 +245,6 @@ class Quadruped{
             this.body.update_flag = true;
             this.body.new_move_state = StopWalk;
             this.body.new_rot_angle = Rotation_Dir.StopRotation;
-            if(move == Special_Moves.LAY){
-                this.body.X = 0;
-                this.body.Z = 0;
-            }else if(move == Special_Moves.STRETCH){
-                this.body.X = 0;
-                this.body.Z = 0;
-            }else{
-                this.body.X = X_MECHDOG;
-                this.body.Z = Z_MECHDOG;
-            }
         }
     }
 }

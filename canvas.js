@@ -876,7 +876,7 @@ function selectSpeed(){
   if(comm.selected == COMport.USB){
     switch (speed) {
       case StopMoveSpeed:
-          comm.send("#254FPC13\r");
+          comm.send("#254FPC14\r");
           break;
       case SpecialMoveSpeed:
           comm.send("#254FPC14\r");
@@ -1080,7 +1080,7 @@ function canvasSize(){
 
   canvasHeight = wHeight - headerHeight - footerHeight;
   
-  buttonHeight = wWidth*0.0022;
+  buttonHeight = wWidth*0.0023;
 
   if (wWidth < 800 || wHeight < 500) mobile = true;
   else mobile = false;
@@ -1218,24 +1218,20 @@ function windowResized() {
   leftB.position(leftWidth+middleWidth+rightWidth/2+20,buttonsPos);
   rightB.position(leftWidth+middleWidth+rightWidth-46,buttonsPos);
 
-  let rightW;
-  if (fkButton.value() == 0) rightW = rightWidth;
-  else rightW = wWidth;
-
   W.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight*0.49);
   W.style('transform', 'scale(' + str(buttonHeight) + ')');
-  A.position(leftWidth+middleWidth+rightW/7,headerHeight+canvasHeight*0.51+rightWidth*0.065);
+  A.position(leftWidth+middleWidth+rightWidth/4-(canvasHeight+leftWidth+rightWidth)/35,headerHeight+canvasHeight*0.51+rightWidth*0.065);
   A.style('transform', 'scale(' + str(buttonHeight) + ')');
   S.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight*0.545+rightWidth/9);
   S.style('transform', 'scale(' + str(buttonHeight) + ')');
-  D.position(leftWidth+middleWidth+rightW*2.9/8-5,headerHeight+canvasHeight*0.51+rightWidth*0.065);
+  D.position(leftWidth+middleWidth+rightWidth/4+(canvasHeight+leftWidth+rightWidth)/40,headerHeight+canvasHeight*0.51+rightWidth*0.065);
   D.style('transform', 'scale(' + str(buttonHeight) + ')');
 
   jY.position(leftWidth+middleWidth+rightWidth*3/4-10,headerHeight+canvasHeight*0.49);
   jY.style('transform', 'scale(' + str(buttonHeight) + ')');
-  jx.position(leftWidth+middleWidth+rightWidth*5/8-5,headerHeight+canvasHeight*0.51+rightWidth*0.065);
+  jx.position(leftWidth+middleWidth+rightWidth*3/4-(canvasHeight+leftWidth+rightWidth)/32,headerHeight+canvasHeight*0.51+rightWidth*0.065);
   jx.style('transform', 'scale(' + str(buttonHeight) + ')');
-  jX.position(leftWidth+middleWidth+rightWidth*6.7/8-5,headerHeight+canvasHeight*0.51+rightWidth*0.065);
+  jX.position(leftWidth+middleWidth+rightWidth*3/4+(canvasHeight+leftWidth+rightWidth)/55,headerHeight+canvasHeight*0.51+rightWidth*0.065);
   jX.style('transform', 'scale(' + str(buttonHeight) + ')');
   jy.position(leftWidth+middleWidth+rightWidth*3/4-10,headerHeight+canvasHeight*0.545+rightWidth/9);
   jy.style('transform', 'scale(' + str(buttonHeight) + ')');
@@ -1502,10 +1498,10 @@ function drawMiddleCanvas(){
 function drawRightCanvas() {
   rightCanvas.background(125);
   image(rightCanvas, -1/2*wWidth+leftWidth+middleWidth, -1/2*wHeight+headerHeight);
-  let joystickSize = (canvasHeight/5+(leftWidth+rightWidth)/4.6)/2;
+  let joystickSize = (canvasHeight+leftWidth+rightWidth)/10;
   image(joystick1, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-joystickSize/2.3, -1/2*wHeight+headerHeight+canvasHeight/2.2,joystickSize,joystickSize);
   image(joystick2, -1/2*wWidth+leftWidth+middleWidth+rightWidth*3/4-joystickSize/2.1, -1/2*wHeight+headerHeight+canvasHeight/2.2,joystickSize,joystickSize);
-  let buttonPos = -1/2*wHeight+headerHeight+canvasHeight*0.485;
+  let buttonPos = -1/2*wHeight+headerHeight+canvasHeight/2.2+joystickSize/6.5;
   if (mobile){
     button.style('width', '25px');
     button.style('height','25px');
