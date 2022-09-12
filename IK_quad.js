@@ -890,6 +890,7 @@ class Body{
                                 this.spm_state = 2;
                                 this.stopped = false;
                             }
+                            break;
                         case 2: // time to stabilize
                             this.spm_state = 3;
                             break;
@@ -898,7 +899,6 @@ class Body{
                             this.spm_state = 0;
                             if(this.sp_move == Special_Moves.UP) this.stopped = true;
                             break;
-                        break;
                     }
                     break;
                 case Special_Moves.TINKLE:

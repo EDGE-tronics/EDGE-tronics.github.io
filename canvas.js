@@ -15,7 +15,7 @@ let robotJoint = [[],[],[],[]], ctrlIK = [[],[]];
 //let frameADD = [[],[],[],[],[],[]], frameN = [1,1,1,1,1,1], saveButton = [[],[],[],[],[],[]], sequencer = [[],[],[],[],[],[]], triggerMENU = [], sequence = [];
 let headerHeight, leftWidth, rightWidth, middleWidth;
 let speed = 4, servoI = 1, servoJ = 1;
-let value;
+let value, buttonPos, joystickSize;
 let shouldHandleKeyDown = false;
 let fbrl = [0, 0, 0, 0];
 var robot = new Quadruped(LSS_Robot_Model.MechDog);
@@ -421,42 +421,36 @@ function setup(){
         case 0:
           if (i == 0) {
             labname = "ROLL";
-            min = -20;
-            max = 20;
+            min = robot.body.roll_limits[0];
+            max = robot.body.roll_limits[1];
           } else {
             labname = "X";
-            min = -45;
-            max = 45;
+            min = robot.body.cgx_limits[0];
+            max = robot.body.cgx_limits[1];
           }
           labcolor = color(200, 90, 0);
           break;
         case 1:
           if (i == 0) {
             labname = "PITCH";
-            min = -25;
-            max = 25;
+            min = robot.body.pitch_limits[0];
+            max = robot.body.pitch_limits[1];
           } else {
             labname = "Y";
-            min = 50;
-            max = 155;
+            min = robot.body.cgy_limits[0];
+            max = robot.body.cgy_limits[1];
           }
           labcolor = color(254, 175, 60);
           break;
         case 2:
           if (i == 0) {
             labname = "YAW";
-            min = -20;
-            max = 20;
+            min = robot.body.yaw_limits[0];
+            max = robot.body.yaw_limits[1];
           } else {
             labname = "Z";
-           if (MODELmenu.selected() == "MECHDOG"){
-              min = -30;
-              max = 30;
-            }
-            else{
-              min = -25;
-              max = 25;
-            }
+            min = robot.body.cgz_limits[0];
+            max = robot.body.cgz_limits[1];
           }
           labcolor = color(57, 57, 57);
           break;
@@ -1080,7 +1074,7 @@ function canvasSize(){
 
   canvasHeight = wHeight - headerHeight - footerHeight;
   
-  buttonHeight = wWidth*0.0023;
+  buttonHeight = (wWidth*0.0025+wHeight*0.0045)/2;
 
   if (wWidth < 800 || wHeight < 500) mobile = true;
   else mobile = false;
@@ -1218,23 +1212,26 @@ function windowResized() {
   leftB.position(leftWidth+middleWidth+rightWidth/2+20,buttonsPos);
   rightB.position(leftWidth+middleWidth+rightWidth-46,buttonsPos);
 
-  W.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight*0.49);
+  joystickSize = (canvasHeight+leftWidth+rightWidth)/10;
+  buttonPos = -1/2*wHeight+headerHeight+canvasHeight/2.2+joystickSize/6.5;
+
+  W.position(leftWidth+middleWidth+rightWidth/4-5,buttonPos+1/2*wHeight);
   W.style('transform', 'scale(' + str(buttonHeight) + ')');
-  A.position(leftWidth+middleWidth+rightWidth/4-(canvasHeight+leftWidth+rightWidth)/35,headerHeight+canvasHeight*0.51+rightWidth*0.065);
+  A.position(leftWidth+middleWidth+rightWidth/4-(canvasHeight+leftWidth+rightWidth)/35,buttonPos+joystickSize*0.25+1/2*wHeight);
   A.style('transform', 'scale(' + str(buttonHeight) + ')');
-  S.position(leftWidth+middleWidth+rightWidth/4-5,headerHeight+canvasHeight*0.545+rightWidth/9);
+  S.position(leftWidth+middleWidth+rightWidth/4-5,buttonPos+joystickSize*0.53+1/2*wHeight);
   S.style('transform', 'scale(' + str(buttonHeight) + ')');
-  D.position(leftWidth+middleWidth+rightWidth/4+(canvasHeight+leftWidth+rightWidth)/40,headerHeight+canvasHeight*0.51+rightWidth*0.065);
+  D.position(leftWidth+middleWidth+rightWidth/4+(canvasHeight+leftWidth+rightWidth)/40,buttonPos+joystickSize*0.25+1/2*wHeight);
   D.style('transform', 'scale(' + str(buttonHeight) + ')');
 
-  jY.position(leftWidth+middleWidth+rightWidth*3/4-10,headerHeight+canvasHeight*0.49);
+  jY.position(leftWidth+middleWidth+rightWidth*3/4-10,buttonPos+1/2*wHeight);
   jY.style('transform', 'scale(' + str(buttonHeight) + ')');
-  jx.position(leftWidth+middleWidth+rightWidth*3/4-(canvasHeight+leftWidth+rightWidth)/32,headerHeight+canvasHeight*0.51+rightWidth*0.065);
+  jx.position(leftWidth+middleWidth+rightWidth*3/4-(canvasHeight+leftWidth+rightWidth)/31,buttonPos+joystickSize*0.25+1/2*wHeight);
   jx.style('transform', 'scale(' + str(buttonHeight) + ')');
-  jX.position(leftWidth+middleWidth+rightWidth*3/4+(canvasHeight+leftWidth+rightWidth)/55,headerHeight+canvasHeight*0.51+rightWidth*0.065);
-  jX.style('transform', 'scale(' + str(buttonHeight) + ')');
-  jy.position(leftWidth+middleWidth+rightWidth*3/4-10,headerHeight+canvasHeight*0.545+rightWidth/9);
+  jy.position(leftWidth+middleWidth+rightWidth*3/4-10,buttonPos+joystickSize*0.53+1/2*wHeight);
   jy.style('transform', 'scale(' + str(buttonHeight) + ')');
+  jX.position(leftWidth+middleWidth+rightWidth*3/4+(canvasHeight+leftWidth+rightWidth)/60,buttonPos+joystickSize*0.25+1/2*wHeight);
+  jX.style('transform', 'scale(' + str(buttonHeight) + ')');
 
   DLabel.position(leftWidth+middleWidth+rightWidth/8,headerHeight+canvasHeight*4/5);
   gaitTypesw.position(leftWidth+middleWidth+rightWidth/4-17,headerHeight+canvasHeight*4/5);
@@ -1498,10 +1495,8 @@ function drawMiddleCanvas(){
 function drawRightCanvas() {
   rightCanvas.background(125);
   image(rightCanvas, -1/2*wWidth+leftWidth+middleWidth, -1/2*wHeight+headerHeight);
-  let joystickSize = (canvasHeight+leftWidth+rightWidth)/10;
   image(joystick1, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-joystickSize/2.3, -1/2*wHeight+headerHeight+canvasHeight/2.2,joystickSize,joystickSize);
   image(joystick2, -1/2*wWidth+leftWidth+middleWidth+rightWidth*3/4-joystickSize/2.1, -1/2*wHeight+headerHeight+canvasHeight/2.2,joystickSize,joystickSize);
-  let buttonPos = -1/2*wHeight+headerHeight+canvasHeight/2.2+joystickSize/6.5;
   if (mobile){
     button.style('width', '25px');
     button.style('height','25px');
