@@ -1497,10 +1497,8 @@ function drawRightCanvas() {
   image(rightCanvas, -1/2*wWidth+leftWidth+middleWidth, -1/2*wHeight+headerHeight);
   image(joystick1, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4-joystickSize/2.3, -1/2*wHeight+headerHeight+canvasHeight/2.2,joystickSize,joystickSize);
   image(joystick2, -1/2*wWidth+leftWidth+middleWidth+rightWidth*3/4-joystickSize/2.1, -1/2*wHeight+headerHeight+canvasHeight/2.2,joystickSize,joystickSize);
-  if (mobile){
-    button.style('width', '25px');
-    button.style('height','25px');
-  }
+  button.style('width', str(int(joystickSize/6)) + 'px');
+  button.style('height', str(int(joystickSize/6)) + 'px');
   if (W.checked()){
     button.background('rgba(57,57,57,0.5)');
     image(button, -1/2*wWidth+leftWidth+middleWidth+rightWidth/4,buttonPos);
