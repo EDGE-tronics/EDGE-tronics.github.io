@@ -701,6 +701,7 @@ function fullscreen(){
     fsButton.html('<');
     fsButton.value(1);
     document.body.requestFullscreen();
+    screen.orientation.lock("landscape");
   }
   windowResized();
 }
