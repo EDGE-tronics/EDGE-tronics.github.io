@@ -1233,10 +1233,10 @@ function windowResized() {
   if(mobile) buttonsPos = headerHeight+canvasHeight/2.2;
   else buttonsPos = headerHeight+canvasHeight/2.6;
 
-  CCW.position(leftWidth+middleWidth+rightWidth/11,buttonsPos);
+  CCW.position(leftWidth+middleWidth+rightWidth/11-1,buttonsPos);
   CW.position(leftWidth+middleWidth+rightWidth/2-42,buttonsPos);
   leftB.position(leftWidth+middleWidth+rightWidth/2+20,buttonsPos);
-  rightB.position(leftWidth+middleWidth+rightWidth-46,buttonsPos);
+  rightB.position(leftWidth+middleWidth+rightWidth-47,buttonsPos);
 
   joystickSize = (canvasHeight+leftWidth+rightWidth)/10;
   buttonPos = -1/2*wHeight+headerHeight+canvasHeight/2.2+joystickSize/6.5;
