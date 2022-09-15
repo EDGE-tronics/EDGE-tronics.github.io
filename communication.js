@@ -17,7 +17,7 @@ async function sendHTTP(cmd) {
   const requestOptions = {
     method: 'POST',
     body: cmd,
-    signal: AbortSignal.timeout(500)
+    signal: AbortSignal.timeout(1000)
   };
 
   try {
