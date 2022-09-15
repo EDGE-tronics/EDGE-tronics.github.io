@@ -17,7 +17,7 @@ async function sendHTTP(cmd) {
   const requestOptions = {
     method: 'POST',
     body: cmd,
-    signal: AbortSignal.timeout(1000)
+    signal: AbortSignal.timeout(500)
   };
 
   try {
@@ -51,21 +51,8 @@ export class Communication
         console.log("Connected to " + this.usb.list()[this.COMnumber]);
 
         delayT(1000).then(() => {
-          // LED Green
-          this.usb.write("#254LED2\r");
-          // Gyre Direction
-          this.usb.write("#11G1\r#12G-1\r#13G-1\r");
-          this.usb.write("#21G1\r#22G-1\r#23G-1\r");
-          this.usb.write("#31G-1\r#32G1\r#33G1\r");
-          this.usb.write("#41G-1\r#42G1\r#43G1\r");
-          // Disable Motion Profile
-          this.usb.write("#254EM0\r");
-          // Filter Position Count
-          this.usb.write("#254FPC1\r");
-          // Angular Stiffness
-          this.usb.write("#254AS-2\r");
-          
           this.selected = COMport.USB;
+          this.configServos();
         });
       }
       else{
@@ -78,6 +65,7 @@ export class Communication
       if (checkIP(ip)){
         IP = "http://" + ip + ":1000";
         this.selected = COMport.WIFI;
+        this.configServos();
       }
       else{
         IP = "0.0.0.0";
@@ -111,6 +99,21 @@ export class Communication
           break;
       }
       return str;
+    }
+    configServos(){
+      // LED Green
+      this.send("#254LED2\r");
+      // Gyre Direction
+      this.send("#11G1\r#12G-1\r#13G-1\r");
+      this.send("#21G1\r#22G-1\r#23G-1\r");
+      this.send("#31G-1\r#32G1\r#33G1\r");
+      this.send("#41G-1\r#42G1\r#43G1\r");
+      // Disable Motion Profile
+      this.send("#254EM0\r");
+      // Filter Position Count
+      this.send("#254FPC1\r");
+      // Angular Stiffness
+      this.send("#254AS-2\r");
     }
     turnOFF(msg){
       alert(msg);

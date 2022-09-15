@@ -141,11 +141,11 @@ class anglesInput{
     this.input.value(this.slider.value());
     //Forward kinematics
     if(this.id >= 11 && comm.selected != COMport.OFF){
-      angle = this.slider.value();
+      let angle = this.slider.value();
 
       //Check if direction is inverted
-      if (this.id - this.id/10 > 1) angle = -angle;
-      comm.send("#" + this.id + "D" + str(angle) + "\r");
+      if (this.id - int(this.id/10)*10 > 1) angle = -angle;
+      comm.send("#" + this.id + "D" + str(angle*10) + "\r");
     }
     //Inverse kinematics
     if (this.id < 11){
@@ -654,7 +654,11 @@ function setup(){
 
 //Direct command
 function CMDsend(){
-  comm.send("#" + directCMD.value() + "\r");
+  var cmd = directCMD.value().toUpperCase();
+  if (!cmd.isEmpty()){
+    if (cmd.charAt(0) != '#') cmd = '#' + cmd + '\r';
+  }
+  comm.send(cmd);
   directCMD.value("");
 }
 
@@ -731,13 +735,13 @@ function jog(){
     jogB.value(1);
     jogB.style('background-color', 'rgb(200,90,0)');
     console.log("Jog On");
-    robot.specialMove(7);
+    robot.specialMove(8);
   }
   else if (jogB.value() == 1){
     jogB.value(0);
     jogB.style('background-color', 'rgb(57, 57, 57)');
     console.log("Jog Off");
-    robot.specialMove(8); 
+    robot.specialMove(9); 
   }
 }
 
@@ -1098,7 +1102,7 @@ function canvasSize(){
 
   canvasHeight = wHeight - headerHeight - footerHeight;
   
-  buttonHeight = (wWidth*0.0025+wHeight*0.0045)/2;
+  buttonHeight = (wWidth*0.002+wHeight*0.004)/2;
 
   if (wWidth < 800 || wHeight < 500) mobile = true;
   else mobile = false;
