@@ -8,20 +8,20 @@ var rotX = 0, rotY = 0;
 export function updateModel(){
   switch(robot.body.model){
     case LSS_Robot_Model.DeskPet:
-      body = loadModel("../assets/models/deskpet/body.obj");
-      shoulder = loadModel("../assets/models/deskpet/shoulder.obj");
-      knee = loadModel("../assets/models/deskpet/shoulder-knee.obj");
-      leg_right = loadModel("../assets/models/deskpet/lower-leg-right.obj");
+      body = loadModel("assets/models/deskpet/body.obj");
+      shoulder = loadModel("assets/models/deskpet/shoulder.obj");
+      knee = loadModel("assets/models/deskpet/shoulder-knee.obj");
+      leg_right = loadModel("assets/models/deskpet/lower-leg-right.obj");
       leg_left = loadModel("../assets/models/deskpet/lower-leg-left.obj");
       robot.updateModel(LSS_Robot_Model.DeskPet);
       break;
     case LSS_Robot_Model.MechDog:
-      body = loadModel("../assets/models/mechdog/body.obj");
-      shoulder = loadModel("../assets/models/mechdog/leg-a.obj");
-      knee_right = loadModel("../assets/models/mechdog/leg-b.obj");
-      knee_left = loadModel("../assets/models/mechdog/leg-b2.obj");
-      leg_right = loadModel("../assets/models/mechdog/leg-c.obj");
-      leg_left = loadModel('../assets/models/mechdog/leg-c2.obj');
+      body = loadModel("assets/models/mechdog/body.obj");
+      shoulder = loadModel("assets/models/mechdog/leg-a.obj");
+      knee_right = loadModel("assets/models/mechdog/leg-b.obj");
+      knee_left = loadModel("assets/models/mechdog/leg-b2.obj");
+      leg_right = loadModel("assets/models/mechdog/leg-c.obj");
+      leg_left = loadModel('assets/models/mechdog/leg-c2.obj');
       robot.updateModel(LSS_Robot_Model.MechDog);
       break;
   }
