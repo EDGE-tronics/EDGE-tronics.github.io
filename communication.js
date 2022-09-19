@@ -103,6 +103,7 @@ export class Communication
     configServos(){
       // LED Green
       this.send("#254LED2\r");
+      LEDsel.value(2);
       // Gyre Direction
       this.send("#11G1\r#12G-1\r#13G-1\r");
       this.send("#21G1\r#22G-1\r#23G-1\r");
@@ -121,6 +122,7 @@ export class Communication
       if (this.selected == COMport.USB || this.selected == COMport.WIFI){
         //Turn off LEDs
         this.send("#254LED0\r");
+        LEDsel.value(0);
         delayT(1000).then(() => {
           if (this.selected == COMport.USB){
             this.usb.close();

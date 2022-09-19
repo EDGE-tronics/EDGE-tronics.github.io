@@ -63,6 +63,7 @@ class headerButtons{
       case 'LIMP':
         if (this.button.value() == 1) limp();
         else halt();
+        this.button.value(0);
         break;
       case 'HALT & HOLD':
         halt();
@@ -78,7 +79,7 @@ class headerButtons{
         time = 100;
         break;
     }
-    if (this.button.value() == 0) delayT(time).then(() => {this.button.style('background-color', 'rgb(57, 57, 57)');});
+    if (this.button.value() == 0) delayT(time).then(() => this.button.style('background-color', 'rgb(57, 57, 57)'));
   }
 }
 
@@ -410,7 +411,8 @@ function setup(){
 
   sendCMD = createButton("SEND");
   sendCMD.mousePressed(CMDsend);
-  sendCMD.value(0);
+  sendCMD.mouseOver(keyLock);
+  sendCMD.mouseOut(keyUnlock);
 
   resetB = createButton("R");
   resetB.size(20,20);
@@ -655,10 +657,12 @@ function setup(){
 //Direct command
 function CMDsend(){
   var cmd = directCMD.value().toUpperCase();
-  if (!cmd.isEmpty()){
+  if (cmd.length > 0){
+    sendCMD.style('background-color', 'rgb(200,90,0)');
     if (cmd.charAt(0) != '#') cmd = '#' + cmd + '\r';
+    comm.send(cmd);
+    delayT(20).then(() => sendCMD.style('background-color', 'rgb(57, 57, 57)'));
   }
-  comm.send(cmd);
   directCMD.value("");
 }
 
@@ -719,15 +723,15 @@ function reset(){
       ctrlIK[i][j].input.value(0);
     }
   }
+  robot.roll(0);
   ctrlIK[1][1].slider.value(ctrlIK[1][1].maxVal);
   ctrlIK[1][1].input.value(ctrlIK[1][1].slider.value());
-  robot.roll(ctrlIK[0][0].slider.value());
-  robot.pitch(ctrlIK[0][1].slider.value());
-  robot.yaw(ctrlIK[0][2].slider.value());
-  robot.frontalOffset(ctrlIK[1][0].slider.value());
-  robot.height(ctrlIK[1][1].slider.value());
-  robot.lateralOffset(ctrlIK[1][2].slider.value());
-  delayT(20).then(() => {resetB.style('background-color', 'rgb(57, 57, 57)');});
+  delayT(50).then(() => resetB.style('background-color', 'rgb(57, 57, 57)'));
+  delayT(200).then(() => robot.frontalOffset(0));
+  delayT(400).then(() => robot.pitch(0));
+  delayT(600).then(() => robot.height(ctrlIK[1][1].maxVal));
+  delayT(800).then(() => robot.yaw(0));
+  delayT(1000).then(() => robot.lateralOffset(0));
 }
 
 function jog(){
@@ -753,6 +757,7 @@ function forward(){
   else{
     console.log("Stop");
     fbrl[0] = 0;
+    if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
   }
 }
 
@@ -764,6 +769,7 @@ function left(){
   else{
     console.log("Stop");
     fbrl[3] = 0;
+    if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
   }
 }
 
@@ -775,6 +781,7 @@ function backward(){
   else{
     console.log("Stop");
     fbrl[1] = 0;
+    if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
   }
 }
 
@@ -786,6 +793,7 @@ function right(){
   else{
     console.log("Stop");
     fbrl[2] = 0;
+    if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
   }
 }
 
@@ -802,6 +810,7 @@ function rotateCCW(){
     CCW.style('background-color', 'rgb(57,57,57)');
     CCW.value(1);
     value = 0;
+    if (comm.selected == COMport.WIFI) delayT(20).then(() => comm.send("#100M1V0\r"));
   }
   robot.rotate(value);
 }
@@ -818,6 +827,7 @@ function rotateCW(){
     CW.style('background-color', 'rgb(57,57,57)');
     CW.value(1);
     value = 0;
+    if (comm.selected == COMport.WIFI) delayT(20).then(() => comm.send("#100M1V0\r"));
   }
   robot.rotate(value);
 }
@@ -851,7 +861,7 @@ function goLeft(){
   leftB.style('background-color', 'rgb(200,90,0)');
   updateSliders(-1, 1, 2);
   robot.lateralOffset(ctrlIK[1][2].slider.value());
-  delayT(20).then(() => {leftB.style('background-color', 'rgb(57, 57, 57)');});
+  delayT(20).then(() => leftB.style('background-color', 'rgb(57, 57, 57)'));
 }
 
 function goRight(){
@@ -859,7 +869,7 @@ function goRight(){
   rightB.style('background-color', 'rgb(200,90,0)');
   updateSliders(1, 1, 2);
   robot.lateralOffset(ctrlIK[1][2].slider.value());
-  delayT(20).then(() => {rightB.style('background-color', 'rgb(57, 57, 57)');});
+  delayT(20).then(() => rightB.style('background-color', 'rgb(57, 57, 57)'));
 }
 
 function updateSliders(sign, i, j){
@@ -917,7 +927,7 @@ function selectSpeed(){
           break;
     }
   }
-  if (comm.selected == COMport.WIFI && speed > 0) comm.send("#100M" + str(robot.orientation(fbrl)) + "S" + speed + "\r");
+  if (comm.selected == COMport.WIFI) comm.send("#100M" + str(robot.orientation(fbrl)) + "S" + speed + "\r");
 }
 
 //Special moves
@@ -931,11 +941,17 @@ function selectLED(){
 
 //Emergency Stop
 function changeButtonE() {
-  halt();
   if (comm.selected != COMport.OFF){
     emergencyButton.style('background-color', 'rgb(200,90,0)');
-    delayT(500).then(() => alert("Emergency stop activated"));
-    delayT(3000).then(() => emergencyButton.style('background-color', 'rgb(254, 175, 60)'));
+    comm.send("#254RESET\r");
+    delayT(500).then(() => {
+      alert("Emergency stop - the robot will reset");
+      halt();
+    })
+    delayT(3000).then(() => {
+      emergencyButton.style('background-color', 'rgb(254, 175, 60)');
+      comm.send("#254LED2\r");
+    })
   }
 }
 
@@ -998,7 +1014,7 @@ function menuBAUD() {
   comm.baud = int(BAUDmenu.value());
   //Send command
   //comm.send("#254CB" + str(baudrate) + "\r");
-  delayT(1000).then(() => {comm.send("#254RESET\r")});
+  delayT(1000).then(() => comm.send("#254RESET\r"));
   //ports.open(comm.usb.list()[comm.COMnumber], {baudRate: comm.baud});
 }
 
@@ -1510,7 +1526,8 @@ function drawMiddleCanvas(){
   if (teachButton.button.value() == 1) getFeedback();
   if (robot.body.new_director_angle != robot.orientation(fbrl)){
     robot.updateAngle(robot.orientation(fbrl));
-    if (comm.selected == COMport.WIFI) comm.send("#100M0V" + robot.orientation(fbrl) + "S" + speed + "\r");
+    if (comm.selected == COMport.WIFI && robot.orientation(fbrl) != 0) comm.send("#100M0V" + robot.orientation(fbrl) + "S" + speed + "\r");
+    else if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) delayT(20).then(() => comm.send("#100M0V0\r"));
   }
   robot.loop();
   if ((comm.selected != COMport.USB || robot.body.stopped) && !mobile){
@@ -1562,4 +1579,4 @@ window.draw = draw;
 window.windowResized = windowResized;
 
 export {robot, robotJoint, ctrlIK, comm, CW, CCW, speed, canvasHeight, middleWidth, wWidth, wHeight};
-export {teachButton, haltButton, limpButton, caliButton, COMmenu, delayT, opacity};
+export {teachButton, haltButton, limpButton, caliButton, COMmenu, delayT, opacity, mobile};
