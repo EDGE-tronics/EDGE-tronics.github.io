@@ -16,7 +16,6 @@ let robotJoint = [[],[],[],[]], ctrlIK = [[],[]];
 let headerHeight, leftWidth, rightWidth, middleWidth;
 let speed = 4, servoI = 1, servoJ = 1;
 let value, buttonPos, joystickSize;
-let shouldHandleKeyDown = false;
 let fbrl = [0, 0, 0, 0];
 var robot = new Quadruped(LSS_Robot_Model.MechDog);
 var comm, keyFlag = true, opacity = false;
@@ -1321,9 +1320,9 @@ function windowResized() {
   // }
 }
 
-document.addEventListener('keydown', function(event) {
-  if (keyFlag && !shouldHandleKeyDown) {
-    switch (event.key) {
+function keyPressed() {
+  if (keyFlag) {
+    switch (key) {
       case 'w':
       case 'W':
       case 'ArrowUp':
@@ -1445,14 +1444,12 @@ document.addEventListener('keydown', function(event) {
         selectMoves();
         break;
     }
-    shouldHandleKeyDown = true;
   }
-});
+};
 
-document.addEventListener('keyup', function(event) {
-  shouldHandleKeyDown = false;
+function keyReleased(){
   if (keyFlag){
-    switch (event.key) {
+    switch (key) {
       case 'w':
       case 'W':
       case 'ArrowUp':
@@ -1489,9 +1486,9 @@ document.addEventListener('keyup', function(event) {
         break;
       default:
         break;
+    }
   }
-  }
-});
+};
 
 function draw(){
   drawMiddleCanvas();
@@ -1577,6 +1574,8 @@ function drawFooter(){
 window.setup = setup;
 window.draw = draw;
 window.windowResized = windowResized;
+window.keyPressed = keyPressed;
+window.keyReleased = keyReleased;
 
 export {robot, robotJoint, ctrlIK, comm, CW, CCW, speed, canvasHeight, middleWidth, wWidth, wHeight};
-export {teachButton, haltButton, limpButton, caliButton, COMmenu, delayT, opacity, mobile};
+export {teachButton, haltButton, limpButton, caliButton, COMmenu, delayT, opacity, mobile, LEDsel};

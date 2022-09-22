@@ -6,7 +6,7 @@
  *  Description:  Communication using Serial port of WiFi
  */
 
-import  {teachButton, haltButton, limpButton, caliButton, COMmenu, delayT} from './canvas.js';
+import  {teachButton, haltButton, limpButton, caliButton, COMmenu, delayT, LEDsel} from './canvas.js';
 
 function checkIP(str) {
   const regexExp = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/gi;
