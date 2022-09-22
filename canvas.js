@@ -754,7 +754,7 @@ function forward(){
   else{
     console.log("Stop");
     fbrl[0] = 0;
-    //if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
+    if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
   }
 }
 
@@ -766,7 +766,7 @@ function left(){
   else{
     console.log("Stop");
     fbrl[3] = 0;
-    //if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
+    if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
   }
 }
 
@@ -778,7 +778,7 @@ function backward(){
   else{
     console.log("Stop");
     fbrl[1] = 0;
-    //if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
+    if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
   }
 }
 
@@ -790,7 +790,7 @@ function right(){
   else{
     console.log("Stop");
     fbrl[2] = 0;
-    //if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
+    if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
   }
 }
 
@@ -807,7 +807,7 @@ function rotateCCW(){
     CCW.style('background-color', 'rgb(57,57,57)');
     CCW.value(1);
     value = 0;
-    //if (comm.selected == COMport.WIFI) delayT(20).then(() => comm.send("#100M1V0\r"));
+    if (comm.selected == COMport.WIFI) delayT(20).then(() => comm.send("#100M1V0\r"));
   }
   robot.rotate(value);
 }
@@ -824,7 +824,7 @@ function rotateCW(){
     CW.style('background-color', 'rgb(57,57,57)');
     CW.value(1);
     value = 0;
-    //if (comm.selected == COMport.WIFI) delayT(20).then(() => comm.send("#100M1V0\r"));
+    if (comm.selected == COMport.WIFI) delayT(20).then(() => comm.send("#100M1V0\r"));
   }
   robot.rotate(value);
 }
@@ -1532,7 +1532,7 @@ function drawMiddleCanvas(){
   if (robot.body.new_director_angle != robot.orientation(fbrl)){
     robot.updateAngle(robot.orientation(fbrl));
     if (comm.selected == COMport.WIFI && robot.orientation(fbrl) != 0) comm.send("#100M0V" + robot.orientation(fbrl) + "S" + speed + "\r");
-    else if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) delayT(20).then(() => comm.send("#100M0V0\r"));
+    else if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
   }
   robot.loop();
   if ((comm.selected != COMport.USB || robot.body.stopped) && !mobile){
