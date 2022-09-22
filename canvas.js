@@ -43,7 +43,7 @@ class headerButtons{
     this.button.html(newname);
   }
   clickEvent(){
-    if (this.name == 'TEACH' || this.name == 'CALIBRATE'){
+    if (this.name == 'TEACH' || this.name == 'CALIBRATE' || this.name == 'LIMP'){
       if (this.button.value() == 1) this.button.value(0);
       else this.button.value(1);
     }
@@ -52,30 +52,28 @@ class headerButtons{
       this.button.style('background-color', 'rgb(200,90,0)');
       if(comm.selected != COMport.OFF) alert("Please wait for the robot to " + this.msg);
     }
-    let time = 3000;
+    let time = 100;
     switch(this.name){
       case 'CALIBRATE':
-        limp();
-        calibrate();
-        this.button.value(0);
+        if (this.button.value() == 1) limp();
         break;
       case 'LIMP':
         if (this.button.value() == 1) limp();
         else halt();
-        this.button.value(0);
         break;
       case 'HALT & HOLD':
         halt();
         this.button.value(0);
+        time = 3000;
         break;
       case 'HOLD':
         halt();
         this.button.value(0);
+        time = 3000;
         break;
       case 'TEACH':
         if (this.button.value() == 1) limp();
         else halt();
-        time = 100;
         break;
     }
     if (this.button.value() == 0) delayT(time).then(() => this.button.style('background-color', 'rgb(57, 57, 57)'));
@@ -350,7 +348,7 @@ function setup(){
   //Limp button
   limpButton = new headerButtons('LIMP',haltButton.xPos-16-int(wWidth/25),'go limp');
   //Calibrate button
-  caliButton = new headerButtons('CALIBRATE',limpButton.xPos-50-int(wWidth/25),'go limp, place the robot in the calibration posture and press OK');
+  caliButton = new headerButtons('CALIBRATE',limpButton.xPos-50-int(wWidth/25),'be still, place the robot in the calibration posture and press limp');
   //Robot model menu
   MODELmenu = createSelect();
   MODELmenu.option('DESKPET');
@@ -756,7 +754,7 @@ function forward(){
   else{
     console.log("Stop");
     fbrl[0] = 0;
-    if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
+    //if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
   }
 }
 
@@ -768,7 +766,7 @@ function left(){
   else{
     console.log("Stop");
     fbrl[3] = 0;
-    if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
+    //if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
   }
 }
 
@@ -780,7 +778,7 @@ function backward(){
   else{
     console.log("Stop");
     fbrl[1] = 0;
-    if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
+    //if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
   }
 }
 
@@ -792,7 +790,7 @@ function right(){
   else{
     console.log("Stop");
     fbrl[2] = 0;
-    if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
+    //if (comm.selected == COMport.WIFI && robot.orientation(fbrl) == 0) comm.send("#100M0V0\r");
   }
 }
 
@@ -809,7 +807,7 @@ function rotateCCW(){
     CCW.style('background-color', 'rgb(57,57,57)');
     CCW.value(1);
     value = 0;
-    if (comm.selected == COMport.WIFI) delayT(20).then(() => comm.send("#100M1V0\r"));
+    //if (comm.selected == COMport.WIFI) delayT(20).then(() => comm.send("#100M1V0\r"));
   }
   robot.rotate(value);
 }
@@ -826,7 +824,7 @@ function rotateCW(){
     CW.style('background-color', 'rgb(57,57,57)');
     CW.value(1);
     value = 0;
-    if (comm.selected == COMport.WIFI) delayT(20).then(() => comm.send("#100M1V0\r"));
+    //if (comm.selected == COMport.WIFI) delayT(20).then(() => comm.send("#100M1V0\r"));
   }
   robot.rotate(value);
 }
@@ -955,46 +953,42 @@ function changeButtonE() {
 }
 
 function calibrate(){
-//TODO: test function 
-  if(serial.length != 0 && comm.selected == COMport.USB){
-      if(limpButton.value() == 0){
-        alert("Press LIMP & position the robot");
-        comm.send("#254LED1\r");
-        caliButton.button.value(0);
-        caliButton.button.style('background-color', 'rgb(57, 57, 57)');
-      }
-      else if(caliButton.button.value() == 1){
+  //TO DO: Test function
+  if(comm.selected != COMport.OFF){
         comm.send("#254CO\r");
-        for(let i = 1; i <= 4; i++){
-          for (let j = 1; j <= 3; j++){
-            comm.send("#" + str(i) + str(j) + "QD" + "\r");
-            data = comm.read("*");
-            while (data == null){
+        if (comm.selected == COMport.USB){
+          for(let i = 1; i <= 4; i++){
+            for (let j = 1; j <= 3; j++){
+              comm.send("#" + str(i) + str(j) + "QD" + "\r");
               data = comm.read("*");
-              if(data == "") break;
-            }
-            posFeedback = comm.read("\r");
-            while (posFeedback == null){
+              while (data == null){
+                data = comm.read("*");
+                if(data == "") break;
+              }
               posFeedback = comm.read("\r");
-              if(posFeedback == "") break;
-            }
-            position = split(posFeedback,"QD");
-            if (position.length > 1){
-              servonumber = int(position[0].substring(1));
-              servoposition = int(position[1])/10;
-              if (abs(servopos) > 1) {
-                alert("Calibration error in servo " + str(servonumber));
-              } else {
-                alert("The robot has been calibrated");
+              while (posFeedback == null){
+                posFeedback = comm.read("\r");
+                if(posFeedback == "") break;
+              }
+              position = split(posFeedback,"QD");
+              if (position.length > 1){
+                servonumber = int(position[0].substring(1));
+                servoposition = int(position[1])/10;
+                if (abs(servopos) > 1) {
+                  alert("Calibration error in servo " + str(servonumber));
+                } else {
+                  alert("The robot has been calibrated");
+                }
               }
             }
           }
         }
-      }
+        else{
+          alert("The robot has been calibrated");
+        }
     }
     else{
-      alert("Please select a COM port");
-      COMmenu.value('OFF');
+      COMmenu.value(0);
       caliButton.button.value(0);
       caliButton.button.style('background-color', 'rgb(57, 57, 57)');
     }
@@ -1072,7 +1066,12 @@ function getFeedback(){
         else servoI++;
       } else servoJ++;
     }
-}
+  }
+  else{
+    alert("Please use USB mode to get feedback");
+    teachButton.button.value(0);
+    teachButton.button.style('background-color', 'rgb(57, 57, 57)');
+  }
 }
 
 function gaitType() {
@@ -1521,6 +1520,15 @@ function drawLeftCanvas() {
 
 function drawMiddleCanvas(){
   if (teachButton.button.value() == 1) getFeedback();
+  if (caliButton.button.value() == 1 && limpButton.button.value() == 1){
+    calibrate();
+    caliButton.button.value(0);
+    limpButton.button.value(0);
+    delayT(3000).then(() =>{
+      caliButton.button.style('background-color', 'rgb(57, 57, 57)');
+      limpButton.button.style('background-color', 'rgb(57, 57, 57)');
+    });
+  }
   if (robot.body.new_director_angle != robot.orientation(fbrl)){
     robot.updateAngle(robot.orientation(fbrl));
     if (comm.selected == COMport.WIFI && robot.orientation(fbrl) != 0) comm.send("#100M0V" + robot.orientation(fbrl) + "S" + speed + "\r");
