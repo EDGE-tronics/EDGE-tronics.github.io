@@ -134,6 +134,38 @@ class anglesInput{
       console.log(this.input.value() + " degrees is out of the range [" + str(this.minVal) + "," + str(this.maxVal) + "]");
     }
     this.slider.value(this.input.value());
+    //Forward kinematics
+    if(this.id >= 11 && comm.selected != COMport.OFF){
+      let angle = this.slider.value();
+
+      //Check if direction is inverted
+      if (this.id - int(this.id/10)*10 > 1) angle = -angle;
+      comm.send("#" + this.id + "D" + str(angle*10) + "\r");
+    }
+    //Inverse kinematics
+    if (this.id < 11){
+      //Update animations
+      switch(this.name){
+        case 'ROLL':
+          robot.roll(this.slider.value());
+          break;
+        case 'PITCH':
+          robot.pitch(this.slider.value());
+          break;
+        case 'YAW':
+          robot.yaw(this.slider.value());
+          break;
+        case 'X':
+          robot.frontalOffset(this.slider.value());
+          break;
+        case 'Y':
+          robot.height(this.slider.value());
+          break;
+        case 'Z':
+          robot.lateralOffset(this.slider.value());
+          break;
+      }
+    }
   }
   sliderEvent(){
     this.input.value(this.slider.value());
@@ -1377,28 +1409,24 @@ function keyPressed() {
         console.log('Pitch-')
         updateSliders(-1,0,1);
         robot.pitch(ctrlIK[0][1].slider.value());
-
         break;
       case 'h':
       case 'H':
         console.log('Pitch+')
         updateSliders(1,0,1);
         robot.pitch(ctrlIK[0][1].slider.value());
-
         break;
       case 'u':
       case 'U':
         console.log('Yaw-')
         updateSliders(-1,0,2);
         robot.yaw(ctrlIK[0][2].slider.value());
-
         break;
       case 'j':
       case 'J':
         console.log('Yaw+')
         updateSliders(1,0,2);
         robot.yaw(ctrlIK[0][2].slider.value());
-
         break;
       case 'x':
       case 'X':
