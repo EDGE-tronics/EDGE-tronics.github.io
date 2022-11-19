@@ -52,7 +52,7 @@ The robot can also be controlled using the keyboard:
 
 ### OFF Mode
 
-In this mode the animation of the robot will display every change triggered by the controls: forward kinematics (left panel) and inverse kinematic (right panel). The only controls that don't have a function in this mode are the "Calibrate", "Limp", "Halt & Hold", "Teach", “Emergency Stop”, "Direct Command" and “LED” functions.
+In this mode the animation of the robot will display every change triggered by the controls: forward kinematics (left panel) and inverse kinematic (right panel), the view can be rotated by moving the mouse and pressing the scroll wheel. The only controls that don't have a function in this mode are the "Calibrate", "Limp", "Halt & Hold", "Teach", “Emergency Stop”, "Direct Command" and “LED” functions.
 
 ### USB Mode
 

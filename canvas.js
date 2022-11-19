@@ -8,7 +8,7 @@ let header, leftCanvas, middleCanvas, rightCanvas, footer, button;
 let logo, joystick1, joystick2, roboto;
 let infoButton, COMmenu, BAUDmenu, emergencyButton, teachButton, haltButton;
 let COMlabel, BAUDlabel, limpButton, caliButton, MODELmenu, labname, labcolor;
-let labelCMD, directCMD, sendCMD, resetB, jogB, CCW, CW, leftB, rightB, W, A, S, D, jy, jY, jx, jX;
+let labelCMD, directCMD, sendCMD, resetB, jogB, CCW, CW, leftB, rightB, W, A, stopRobot, S, D, jy, jY, jx, jX;
 let DLabel, gaitTypesw, SLabel, speedLabel, speedSel, CLabel, gaitShapesw, SQLabel;
 let checkbox, checkbox2, movesLabel, movesSel, ledLabel, LEDsel, seqButton, fkButton, fsButton;
 let robotJoint = [[],[],[],[]], ctrlIK = [[],[]];
@@ -545,6 +545,12 @@ function setup(){
   A.style('opacity', '0');
   A.changed(left);
 
+  stopRobot = createButton("x");
+  stopRobot.size(20,20);
+  stopRobot.style('opacity', '0');
+  stopRobot.value(0);
+  stopRobot.mousePressed(stopButton);
+
   S = createCheckbox("");
   S.style('transform', 'scale(' + str(buttonHeight) + ')');
   S.style('opacity', '0');
@@ -769,13 +775,13 @@ function jog(){
     jogB.value(1);
     jogB.style('background-color', 'rgb(200,90,0)');
     console.log("Jog On");
-    robot.specialMove(8);
+    robot.specialMove(7);
   }
   else if (jogB.value() == 1){
     jogB.value(0);
     jogB.style('background-color', 'rgb(57, 57, 57)');
     console.log("Jog Off");
-    robot.specialMove(9); 
+    robot.specialMove(8); 
   }
 }
 
@@ -799,6 +805,20 @@ function left(){
     console.log("Stop");
     fbrl[3] = 0;
   }
+}
+
+function stopButton(){
+  console.log("Stop");
+  fbrl = [0,0,0,0];
+  W.checked(false);
+  A.checked(false);
+  S.checked(false);
+  D.checked(false);
+  CW.value(0);
+  CCW.value(0);
+  rotateCW();
+  rotateCCW();
+  if (comm.selected == COMport.WIFI) comm.send("#100M0V0\r");
 }
 
 function backward(){
@@ -929,28 +949,6 @@ function selectSpeed(){
   robot.setSpeed(parseInt(speed));
   robot.changeSpeed(parseInt(speed));
 
-  // if(comm.selected == COMport.USB){
-  //   switch (speed) {
-  //     case StopMoveSpeed:
-  //         comm.send("#254FPC14\r");
-  //         break;
-  //     case SpecialMoveSpeed:
-  //         comm.send("#254FPC14\r");
-  //         break;
-  //     case 1:
-  //         comm.send("#254FPC4\r");
-  //         break;
-  //     case 2:
-  //         comm.send("#254FPC4\r");
-  //         break;
-  //     case 3:
-  //         comm.send("#254FPC3\r");
-  //         break;
-  //     case 4:
-  //         comm.send("#254FPC3\r");
-  //         break;
-  //   }
-  // }
   if (comm.selected == COMport.WIFI) comm.send("#100M0V" + str(robot.orientation(fbrl)) + "S" + str(speed) + "\r");
 }
 
@@ -1290,6 +1288,7 @@ function windowResized() {
   W.style('transform', 'scale(' + str(buttonHeight) + ')');
   A.position(leftWidth+middleWidth+rightWidth/4-(canvasHeight+leftWidth+rightWidth)/35,buttonPos+joystickSize*0.25+1/2*wHeight);
   A.style('transform', 'scale(' + str(buttonHeight) + ')');
+  stopRobot.position(leftWidth+middleWidth+rightWidth/4,buttonPos+joystickSize*0.25+1/2*wHeight);
   S.position(leftWidth+middleWidth+rightWidth/4-5,buttonPos+joystickSize*0.53+1/2*wHeight);
   S.style('transform', 'scale(' + str(buttonHeight) + ')');
   D.position(leftWidth+middleWidth+rightWidth/4+(canvasHeight+leftWidth+rightWidth)/40,buttonPos+joystickSize*0.25+1/2*wHeight);
@@ -1297,7 +1296,7 @@ function windowResized() {
 
   jY.position(leftWidth+middleWidth+rightWidth*3/4-10,buttonPos+1/2*wHeight);
   jY.style('transform', 'scale(' + str(buttonHeight) + ')');
-  jx.position(leftWidth+middleWidth+rightWidth*3/4-(canvasHeight+leftWidth+rightWidth)/31,buttonPos+joystickSize*0.25+1/2*wHeight);
+  jx.position(leftWidth+middleWidth+rightWidth*3/4-(canvasHeight+leftWidth+rightWidth)/30,buttonPos+joystickSize*0.25+1/2*wHeight);
   jx.style('transform', 'scale(' + str(buttonHeight) + ')');
   jy.position(leftWidth+middleWidth+rightWidth*3/4-10,buttonPos+joystickSize*0.53+1/2*wHeight);
   jy.style('transform', 'scale(' + str(buttonHeight) + ')');
