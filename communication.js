@@ -46,14 +46,14 @@ export class Communication
       this.usb = new p5.SerialPort();
     }
     initUSB(){
-      if (this.usb.list().length != 0){
-        this.usb.open(this.usb.list()[this.COMnumber], {baudRate: this.baud});
-        console.log("Connected to " + this.usb.list()[this.COMnumber]);
-
-        delayT(1000).then(() => {
+      if (this.usb.list().length > 0){
+        this.usb.on('open', this.usb.close());  //Close if already open
+        delayT(1000).then(() => {               //Open with specified baudrate
+          this.usb.open(this.usb.list()[this.COMnumber], {baudRate: this.baud});
+          console.log("Connected to " + this.usb.list()[this.COMnumber]);
           this.selected = COMport.USB;
-          this.configServos();
         });
+        delayT(1000).then(() => this.configServos());
       }
       else{
         this.turnOFF("No serial port available");
@@ -112,7 +112,7 @@ export class Communication
       // Disable Motion Profile
       this.send("#254EM0\r");
       // Filter Position Count
-      this.send("#254FPC1\r");
+      this.send("#254FPC15\r");
       // Angular Stiffness
       this.send("#254AS-2\r");
     }
@@ -124,10 +124,7 @@ export class Communication
         this.send("#254LED0\r");
         LEDsel.value(0);
         delayT(1000).then(() => {
-          if (this.selected == COMport.USB){
-            this.usb.close();
-            closeSerial();
-          }
+          if (this.selected == COMport.USB) this.usb.close();
         });
       }
       if (limpButton.button.value() == 1){

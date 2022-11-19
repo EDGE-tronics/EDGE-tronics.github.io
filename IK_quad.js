@@ -247,34 +247,30 @@ class Joints{
         this.updateJoints(leg, joint, angle);
     }
 	moveLeg(leg){
-        var id;
         var angle;
         var leg_id = leg.leg_ID-1;
         for (var joint = 0; joint < 3; joint++) {
             angle = this.joint_angles[leg_id][joint] - this.joint_offsets[joint];
             if (angle < this.joint_minmax[0][joint]) angle = this.joint_minmax[0][joint];
             if (angle > this.joint_minmax[1][joint]) angle = this.joint_minmax[1][joint];
-            id = (leg.leg_ID)*10 + joint + 1;
-
             this.updateJoints(leg, joint, angle);
         }
     }
 	moveBody(){
-        var id;
         var angle;
         for (var leg = 0; leg < 4; leg++) {
             for (var joint = 0; joint < 3; joint++) {
                 angle = this.joint_angles[leg][joint] - this.joint_offsets[joint];
-
                 if (angle < this.joint_minmax[0][joint]) angle = this.joint_minmax[0][joint];
                 if (angle > this.joint_minmax[1][joint]) angle = this.joint_minmax[1][joint];
-                id = (leg+1)*10 + joint+1;
-
                 this.updateJoints(leg, joint, angle);
             }
         }
     }
     updateJoints(leg, joint, angle){
+        //Send command
+        if(comm.selected == COMport.USB) comm.send("#" +  str(leg+1) + str(joint+1) + "D" + parseInt(angle) + "\r");
+
         //Check if direction is inverted
         if (joint > 0) angle = -angle/10;
         else angle = angle/10;
@@ -282,9 +278,6 @@ class Joints{
         //Update animation
         robotJoint[leg][joint].slider.value(angle);
         robotJoint[leg][joint].input.value(robotJoint[leg][joint].slider.value());
-
-        //Send command
-        if(comm.selected == COMport.USB) comm.send("#" +  str(leg) + str(joint) + "D" + parseInt(angle*10) + "\r");
     }
 }
 

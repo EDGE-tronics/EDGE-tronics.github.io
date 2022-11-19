@@ -10,7 +10,7 @@
  */
 
 import {Body, Gait_Type, Special_Moves, Rotation_Dir, X_MECHDOG, Z_MECHDOG} from './IK_quad.js';
-import {COMport} from './communication.js';
+import {Communication, COMport} from './communication.js';
 import{comm} from './canvas.js';
 
 var StopWalk = 0;
@@ -157,31 +157,36 @@ class Quadruped{
     }
     changeSpeed(speed) {
         this.actual_speed = speed;
-
         switch (speed) {
             case StopMoveSpeed:
                 this.dt.updateDT(60);
                 if (this.speed == 4) this.body.new_beta = Gait_Type.Dynamic;
                 else this.body.new_beta = Gait_Type.Static;
+                if(comm.selected == COMport.USB) comm.send("#254FPC14\r");
                 break;
             case SpecialMoveSpeed:
                 this.dt.updateDT(180);
+                if(comm.selected == COMport.USB) comm.send("#254FPC14\r");
                 break;
             case 1:
                 this.dt.updateDT(70);
                 this.body.new_beta = Gait_Type.Static;
+                if(comm.selected == COMport.USB) comm.send("#254FPC4\r");
                 break;
             case 2:
                 this.dt.updateDT(60);
                 this.body.new_beta = Gait_Type.Static;
+                if(comm.selected == COMport.USB) comm.send("#254FPC4\r");
                 break;
             case 3:
                 this.dt.updateDT(50);
                 this.body.new_beta = Gait_Type.Static;
+                if(comm.selected == COMport.USB) comm.send("#254FPC3\r");
                 break;
             case 4:
-                this.dt.updateDT(55);
+                this.dt.updateDT(50);
                 this.body.new_beta = Gait_Type.Dynamic;
+                if(comm.selected == COMport.USB) comm.send("#254FPC3\r");
                 break;
             default:
                 break;
@@ -249,4 +254,4 @@ class Quadruped{
     }
 }
 
-export {Quadruped};
+export {Quadruped, StopMoveSpeed, SpecialMoveSpeed};

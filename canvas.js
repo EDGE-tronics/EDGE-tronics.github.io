@@ -1,4 +1,4 @@
-import {Quadruped} from './quadruped.js';
+import {Quadruped, StopMoveSpeed, SpecialMoveSpeed} from './quadruped.js';
 import {LSS_Robot_Model, Foot_Trajectory} from './IK_quad.js';
 import {updateModel, robotAnimations, addOpacity} from './animations.js';
 import {Communication, COMport} from './communication.js';
@@ -17,6 +17,7 @@ let headerHeight, leftWidth, rightWidth, middleWidth;
 let speed = 4, servoI = 1, servoJ = 1;
 let value, buttonPos, joystickSize;
 let fbrl = [0, 0, 0, 0];
+comm = new Communication(COMport.OFF, 38400);
 var robot = new Quadruped(LSS_Robot_Model.MechDog);
 var comm, keyFlag = true, opacity = false;
 var mobile = false;
@@ -291,8 +292,6 @@ function delayT(time) {
 }
 
 function setup(){
-  comm = new Communication(COMport.OFF, 9600);
-
   //Switch width and height if the orientation changes
   if(deviceOrientation == LANDSCAPE){
     createCanvas(windowWidth,windowHeight, WEBGL);
@@ -360,8 +359,9 @@ function setup(){
   BAUDmenu.option('19200');
   BAUDmenu.option('38400');
   BAUDmenu.option('57600');
-  BAUDmenu.selected('9600');
-  BAUDmenu.disable();
+  BAUDmenu.option('115200');
+  BAUDmenu.selected('38400');
+  // BAUDmenu.disable();
   BAUDmenu.changed(menuBAUD);
   BAUDlabel = createDiv('BAUD');
   BAUDlabel.style('color', 'rgb(57, 57, 57)');
@@ -652,7 +652,8 @@ function setup(){
   seqButton.value(0);
   windowResized();
 
-  if (mobile) seqButton.hide();
+  //if (mobile) 
+  seqButton.hide();
 
   //Robot Model
   updateModel();
@@ -928,28 +929,28 @@ function selectSpeed(){
   robot.setSpeed(parseInt(speed));
   robot.changeSpeed(parseInt(speed));
 
-  if(comm.selected == COMport.USB){
-    switch (speed) {
-      case StopMoveSpeed:
-          comm.send("#254FPC14\r");
-          break;
-      case SpecialMoveSpeed:
-          comm.send("#254FPC14\r");
-          break;
-      case 1:
-          comm.send("#254FPC4\r");
-          break;
-      case 2:
-          comm.send("#254FPC4\r");
-          break;
-      case 3:
-          comm.send("#254FPC3\r");
-          break;
-      case 4:
-          comm.send("#254FPC3\r");
-          break;
-    }
-  }
+  // if(comm.selected == COMport.USB){
+  //   switch (speed) {
+  //     case StopMoveSpeed:
+  //         comm.send("#254FPC14\r");
+  //         break;
+  //     case SpecialMoveSpeed:
+  //         comm.send("#254FPC14\r");
+  //         break;
+  //     case 1:
+  //         comm.send("#254FPC4\r");
+  //         break;
+  //     case 2:
+  //         comm.send("#254FPC4\r");
+  //         break;
+  //     case 3:
+  //         comm.send("#254FPC3\r");
+  //         break;
+  //     case 4:
+  //         comm.send("#254FPC3\r");
+  //         break;
+  //   }
+  // }
   if (comm.selected == COMport.WIFI) comm.send("#100M0V" + str(robot.orientation(fbrl)) + "S" + str(speed) + "\r");
 }
 
@@ -1032,18 +1033,18 @@ function menuBAUD() {
   //Update baudrate
   comm.baud = int(BAUDmenu.value());
   //Send command
-  //comm.send("#254CB" + str(baudrate) + "\r");
+  comm.send("#254CB" + str(comm.baud) + "\r");
   delayT(1000).then(() => comm.send("#254RESET\r"));
-  //ports.open(comm.usb.list()[comm.COMnumber], {baudRate: comm.baud});
+  comm.turnOFF("Please select a contorl mode");
 }
 
 function informationB(){
   switch(parseInt(infoButton.value())){
     case 0:
-      window.open('https://docs.google.com/document/d/1l8P6cEEyHwDhbbdA-603aYjDc3sLHclymzqD1oP1LYg/');
+      window.open('https://community.robotshop.com/blog/show/mechdog-for-beginners-advancecd-users-developers');
       break;
     case 1:
-      window.open('https://github.com/Robotics-Technology/Desk-Pet');
+      window.open('https://github.com/Lynxmotion/mechDOG');
       break;
     case 2:
       window.open('https://www.robotshop.com/community/forum/latest');
