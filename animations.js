@@ -1,5 +1,5 @@
 import {LSS_Robot_Model} from './IK_quad.js';
-import {CCW, CW, speed, robot, robotJoint, canvasHeight, middleWidth, wWidth, wHeight} from './canvas.js';
+import {CCW, CW, speed, robot, robotJoint, canvasHeight, middleWidth, wWidth, wHeight, mobile} from './canvas.js';
 
 let keyval = 0;	
 let body, shoulder, knee, knee_right, knee_left, leg_right, leg_left;
